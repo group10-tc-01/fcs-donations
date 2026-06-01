@@ -47,6 +47,7 @@
 
     <!-- Infrastructure.Kafka -->
     <PackageVersion Include="Confluent.Kafka" Version="2.6.1" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
 
     <!-- Tests -->
     <PackageVersion Include="Bogus" Version="35.6.5" />

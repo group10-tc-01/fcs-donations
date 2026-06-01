@@ -1,34 +1,44 @@
+using Confluent.Kafka;
 using Fcg.Donations.Application.Abstractions.Messaging;
 using Fcg.Donations.Infrastructure.Kafka.Settings;
-using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 namespace Fcg.Donations.Infrastructure.Kafka.Messaging;
 
-public sealed class KafkaMessagePublisher : IMessagePublisher
+public sealed class KafkaMessagePublisher : IMessagePublisher, IDisposable
 {
-    private readonly KafkaSettings _settings;
+    private readonly IProducer<Null, string> _producer;
+    private readonly string _topicName;
     private readonly ILogger<KafkaMessagePublisher> _logger;
 
     public KafkaMessagePublisher(IOptions<KafkaSettings> options, ILogger<KafkaMessagePublisher> logger)
     {
-        _settings = options.Value;
+        _topicName = options.Value.TopicName;
         _logger = logger;
+
+        var config = new ProducerConfig
+        {
+            BootstrapServers = options.Value.BootstrapServers,
+            Acks = Acks.All
+        };
+
+        _producer = new ProducerBuilder<Null, string>(config).Build();
     }
 
     public async Task PublishAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default)
     {
-        var config = new ProducerConfig
-        {
-            BootstrapServers = _settings.BootstrapServers,
-            Acks = Acks.All
-        };
-
-        using var producer = new ProducerBuilder<Null, string>(config).Build();
         var payload = JsonSerializer.Serialize(message);
-        await producer.ProduceAsync(_settings.TopicName, new Message<Null, string> { Value = payload }, cancellationToken);
-        _logger.LogInformation("Published message to topic {TopicName}", _settings.TopicName);
+        await _producer.ProduceAsync(_topicName, new Message<Null, string> { Value = payload }, cancellationToken);
+        _logger.LogInformation("Published message to topic {TopicName}", _topicName);
     }
+
+    public async Task PublishRawAsync(string payload, CancellationToken cancellationToken = default)
+    {
+        await _producer.ProduceAsync(_topicName, new Message<Null, string> { Value = payload }, cancellationToken);
+        _logger.LogInformation("Published raw message to topic {TopicName}", _topicName);
+    }
+
+    public void Dispose() => _producer.Dispose();
 }
