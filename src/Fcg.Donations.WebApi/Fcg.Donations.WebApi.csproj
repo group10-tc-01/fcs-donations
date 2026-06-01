@@ -17,7 +17,7 @@
     <ProjectReference Include="..\Fcg.Donations.Infrastructure.Http\Fcg.Donations.Infrastructure.Http.csproj" />
     <ProjectReference Include="..\Fcg.Donations.Infrastructure.Auth\Fcg.Donations.Infrastructure.Auth.csproj" />
     <ProjectReference Include="..\Fcg.Donations.Infrastructure.SqlServer\Fcg.Donations.Infrastructure.SqlServer.csproj" />
-    <ProjectReference Include="..\Fcg.Donations.Infrastructure.MongoDb\Fcg.Donations.Infrastructure.MongoDb.csproj" />
+
     <ProjectReference Include="..\Fcg.Donations.Infrastructure.Kafka\Fcg.Donations.Infrastructure.Kafka.csproj" />
   </ItemGroup>
 </Project>

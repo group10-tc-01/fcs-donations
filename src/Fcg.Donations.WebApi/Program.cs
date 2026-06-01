@@ -1,10 +1,9 @@
 using Fcg.Donations.Application.DependencyInjection;
-using Fcg.Donations.Infrastructure.Http.DependencyInjection;
-using Fcg.Donations.WebApi.DependencyInjection;
 using Fcg.Donations.Infrastructure.Auth.DependencyInjection;
-using Fcg.Donations.Infrastructure.SqlServer.DependencyInjection;
-using Fcg.Donations.Infrastructure.MongoDb.DependencyInjection;
+using Fcg.Donations.Infrastructure.Http.DependencyInjection;
 using Fcg.Donations.Infrastructure.Kafka.DependencyInjection;
+using Fcg.Donations.Infrastructure.SqlServer.DependencyInjection;
+using Fcg.Donations.WebApi.DependencyInjection;
 
 namespace Fcg.Donations.WebApi;
 
@@ -16,9 +15,8 @@ public class Program
 
         builder.Services.AddWebApi(builder.Configuration);
         builder.Services.AddApplication();
-        builder.Services.AddHttpInfrastructure(builder.Configuration);
         builder.Services.AddSqlServerInfrastructure(builder.Configuration);
-        builder.Services.AddMongoDbInfrastructure(builder.Configuration);
+        builder.Services.AddHttpInfrastructure(builder.Configuration);
         builder.Services.AddKafkaInfrastructure(builder.Configuration);
         builder.Services.AddAuthInfrastructure(builder.Configuration);
 

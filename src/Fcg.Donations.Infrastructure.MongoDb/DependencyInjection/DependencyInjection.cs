@@ -1,5 +1,5 @@
 using Fcg.Donations.Domain.Abstractions;
-using Fcg.Donations.Domain.Items;
+using Fcg.Donations.Domain.Donations;
 using Fcg.Donations.Infrastructure.MongoDb.HealthChecks;
 using Fcg.Donations.Infrastructure.MongoDb.Persistence;
 using Fcg.Donations.Infrastructure.MongoDb.Persistence.Repositories;
@@ -31,7 +31,7 @@ public static class DependencyInjection
         });
 
         services.AddSingleton<MongoDbContext>();
-        services.AddScoped<IItemRepository, ItemRepository>();
+        services.AddScoped<IDonationRepository, DonationRepository>();
         services.AddScoped<IUnitOfWork, MongoUnitOfWork>();
         services.AddHealthChecks().AddCheck<MongoDbHealthCheck>("mongodb");
 

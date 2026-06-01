@@ -1,4 +1,4 @@
-using Fcg.Donations.Domain.Items;
+using Fcg.Donations.Domain.Donations;
 using MongoDB.Driver;
 
 namespace Fcg.Donations.Infrastructure.MongoDb.Persistence;
@@ -12,5 +12,5 @@ public sealed class MongoDbContext
         _database = database;
     }
 
-    public IMongoCollection<Item> Items => _database.GetCollection<Item>("items");
+    public IMongoCollection<Donation> Donations => _database.GetCollection<Donation>("donations");
 }
