@@ -1,7 +1,9 @@
-using Fcg.Donations.Application.Abstractions.Messaging;
+using Fcg.Donations.Application.Abstractions.Authentication;
+using Fcg.Donations.Application.Abstractions.ExternalServices;
 using Fcg.Donations.CommomTestsUtilities.TestDoubles;
 using Fcg.Donations.Domain.Abstractions;
-using Fcg.Donations.Domain.Items;
+using Fcg.Donations.Domain.Donations;
+using Fcg.Donations.Domain.OutboxMessages;
 using Fcg.Donations.WebApi;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -12,9 +14,11 @@ namespace Fcg.Donations.IntegratedTests.Configurations;
 
 public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
-    public InMemoryItemRepository Repository { get; } = new();
+    public InMemoryDonationRepository DonationRepository { get; } = new();
+    public InMemoryOutboxMessageRepository OutboxRepository { get; } = new();
     public FakeUnitOfWork UnitOfWork { get; } = new();
-    public FakeMessagePublisher Publisher { get; } = new();
+    public FakeCampaignEligibilityClient CampaignClient { get; } = new();
+    public FakeLoggedUserService LoggedUser { get; } = new();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -22,13 +26,17 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
         builder.ConfigureServices(services =>
         {
-            services.RemoveAll<IItemRepository>();
+            services.RemoveAll<IDonationRepository>();
+            services.RemoveAll<IOutboxMessageRepository>();
             services.RemoveAll<IUnitOfWork>();
-            services.RemoveAll<IMessagePublisher>();
+            services.RemoveAll<ICampaignEligibilityClient>();
+            services.RemoveAll<ILoggedUserService>();
 
-            services.AddSingleton<IItemRepository>(Repository);
+            services.AddSingleton<IDonationRepository>(DonationRepository);
+            services.AddSingleton<IOutboxMessageRepository>(OutboxRepository);
             services.AddSingleton<IUnitOfWork>(UnitOfWork);
-            services.AddSingleton<IMessagePublisher>(Publisher);
+            services.AddSingleton<ICampaignEligibilityClient>(CampaignClient);
+            services.AddSingleton<ILoggedUserService>(LoggedUser);
         });
     }
 }

@@ -19,21 +19,21 @@ namespace Fcg.Donations.FunctionalTests.Features
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "2.0.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class CriarItemFeature : object, Xunit.IClassFixture<CriarItemFeature.FixtureData>, Xunit.IAsyncLifetime
+    public partial class CriarDoacaoFeature : object, Xunit.IClassFixture<CriarDoacaoFeature.FixtureData>, Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new System.Globalization.CultureInfo("pt-BR"), "Features", "Criar item", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags);
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new System.Globalization.CultureInfo("pt-BR"), "Features", "Criar doacao", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags);
         
         private Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "CreateItem.feature"
+#line 1 "CreateDonation.feature"
 #line hidden
         
-        public CriarItemFeature(CriarItemFeature.FixtureData fixtureData, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public CriarDoacaoFeature(CriarDoacaoFeature.FixtureData fixtureData, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -92,14 +92,14 @@ namespace Fcg.Donations.FunctionalTests.Features
             await this.TestTearDownAsync();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Criar item valido")]
-        [Xunit.TraitAttribute("FeatureTitle", "Criar item")]
-        [Xunit.TraitAttribute("Description", "Criar item valido")]
-        public async System.Threading.Tasks.Task CriarItemValido()
+        [Xunit.SkippableFactAttribute(DisplayName="Criar doacao valida")]
+        [Xunit.TraitAttribute("FeatureTitle", "Criar doacao")]
+        [Xunit.TraitAttribute("Description", "Criar doacao valida")]
+        public async System.Threading.Tasks.Task CriarDoacaoValida()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Criar item valido", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Criar doacao valida", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 3
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -111,13 +111,19 @@ namespace Fcg.Donations.FunctionalTests.Features
             {
                 await this.ScenarioStartAsync();
 #line 4
-    await testRunner.GivenAsync("que eu possuo uma requisicao valida de item", ((string)(null)), ((global::Reqnroll.Table)(null)), "Dado ");
+    await testRunner.GivenAsync("que eu possuo uma requisicao valida de doacao", ((string)(null)), ((global::Reqnroll.Table)(null)), "Dado ");
 #line hidden
 #line 5
-    await testRunner.WhenAsync("eu executar o caso de uso de criacao", ((string)(null)), ((global::Reqnroll.Table)(null)), "Quando ");
+    await testRunner.AndAsync("a campanha esta elegivel", ((string)(null)), ((global::Reqnroll.Table)(null)), "E ");
 #line hidden
 #line 6
-    await testRunner.ThenAsync("o item deve ser criado com sucesso", ((string)(null)), ((global::Reqnroll.Table)(null)), "Entao ");
+    await testRunner.WhenAsync("eu executar o caso de uso de criacao", ((string)(null)), ((global::Reqnroll.Table)(null)), "Quando ");
+#line hidden
+#line 7
+    await testRunner.ThenAsync("a doacao deve ser criada com sucesso", ((string)(null)), ((global::Reqnroll.Table)(null)), "Entao ");
+#line hidden
+#line 8
+    await testRunner.AndAsync("uma mensagem de outbox deve ser gerada", ((string)(null)), ((global::Reqnroll.Table)(null)), "E ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -130,12 +136,12 @@ namespace Fcg.Donations.FunctionalTests.Features
             
             async System.Threading.Tasks.Task Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await CriarItemFeature.FeatureSetupAsync();
+                await CriarDoacaoFeature.FeatureSetupAsync();
             }
             
             async System.Threading.Tasks.Task Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await CriarItemFeature.FeatureTearDownAsync();
+                await CriarDoacaoFeature.FeatureTearDownAsync();
             }
         }
     }
