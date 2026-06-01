@@ -1,5 +1,5 @@
 using Fcg.Donations.Application.Abstractions.ExternalServices;
-using Fcg.Donations.Infrastructure.Http.ExternalQuotes;
+using Fcg.Donations.Infrastructure.Http.CampaignEligibility;
 using Fcg.Donations.Infrastructure.Http.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,28 +14,27 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddHttpInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<ExternalQuoteOptions>(configuration.GetSection(ExternalQuoteOptions.SectionName));
+        services.Configure<CampaignApiOptions>(configuration.GetSection(CampaignApiOptions.SectionName));
 
-        services.AddRefitClient<IGitHubZenApi>()
+        services.AddRefitClient<ICampaignEligibilityApi>()
             .ConfigureHttpClient((serviceProvider, client) =>
             {
-                var externalQuote = serviceProvider.GetRequiredService<IOptions<ExternalQuoteOptions>>().Value;
-                client.BaseAddress = new Uri(externalQuote.BaseUrl);
-                client.Timeout = TimeSpan.FromSeconds(externalQuote.TimeoutSeconds);
-                client.DefaultRequestHeaders.UserAgent.ParseAdd("Fcg.Donations/1.0");
+                var options = serviceProvider.GetRequiredService<IOptions<CampaignApiOptions>>().Value;
+                client.BaseAddress = new Uri(options.BaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
             })
             .AddPolicyHandler((serviceProvider, _) =>
             {
-                var retry = serviceProvider.GetRequiredService<IOptions<ExternalQuoteOptions>>().Value.Retry;
-                return CreateExternalQuoteRetryPolicy(retry);
+                var retry = serviceProvider.GetRequiredService<IOptions<CampaignApiOptions>>().Value.Retry;
+                return CreateRetryPolicy(retry);
             });
 
-        services.AddScoped<IExternalQuoteClient, ExternalQuoteClient>();
+        services.AddScoped<ICampaignEligibilityClient, CampaignEligibilityClient>();
 
         return services;
     }
 
-    private static IAsyncPolicy<HttpResponseMessage> CreateExternalQuoteRetryPolicy(ExternalQuoteRetryOptions retry)
+    private static IAsyncPolicy<HttpResponseMessage> CreateRetryPolicy(CampaignApiRetryOptions retry)
     {
         return HttpPolicyExtensions
             .HandleTransientHttpError()
