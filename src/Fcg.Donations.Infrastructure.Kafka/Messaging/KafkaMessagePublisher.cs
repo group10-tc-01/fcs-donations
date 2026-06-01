@@ -1,0 +1,34 @@
+using Fcg.Donations.Application.Abstractions.Messaging;
+using Fcg.Donations.Infrastructure.Kafka.Settings;
+using Confluent.Kafka;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System.Text.Json;
+
+namespace Fcg.Donations.Infrastructure.Kafka.Messaging;
+
+public sealed class KafkaMessagePublisher : IMessagePublisher
+{
+    private readonly KafkaSettings _settings;
+    private readonly ILogger<KafkaMessagePublisher> _logger;
+
+    public KafkaMessagePublisher(IOptions<KafkaSettings> options, ILogger<KafkaMessagePublisher> logger)
+    {
+        _settings = options.Value;
+        _logger = logger;
+    }
+
+    public async Task PublishAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default)
+    {
+        var config = new ProducerConfig
+        {
+            BootstrapServers = _settings.BootstrapServers,
+            Acks = Acks.All
+        };
+
+        using var producer = new ProducerBuilder<Null, string>(config).Build();
+        var payload = JsonSerializer.Serialize(message);
+        await producer.ProduceAsync(_settings.TopicName, new Message<Null, string> { Value = payload }, cancellationToken);
+        _logger.LogInformation("Published message to topic {TopicName}", _settings.TopicName);
+    }
+}
