@@ -1,6 +1,6 @@
-using fcs.Donations.Application.Abstractions.Messaging;
+using Fcs.Donations.Application.Abstractions.Messaging;
 
-namespace fcs.Donations.Application.UseCases.Items.CreateItem;
+namespace Fcs.Donations.Application.UseCases.Items.CreateItem;
 
 public interface ICreateItemUseCase : ICommandHandler<CreateItemRequest, CreateItemResponse>
 {

@@ -13,11 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\fcs.Donations.Application\fcs.Donations.Application.csproj" />
-    <ProjectReference Include="..\fcs.Donations.Infrastructure.Http\fcs.Donations.Infrastructure.Http.csproj" />
-    <ProjectReference Include="..\fcs.Donations.Infrastructure.Auth\fcs.Donations.Infrastructure.Auth.csproj" />
-    <ProjectReference Include="..\fcs.Donations.Infrastructure.SqlServer\fcs.Donations.Infrastructure.SqlServer.csproj" />
+    <ProjectReference Include="..\Fcs.Donations.Application\Fcs.Donations.Application.csproj" />
+    <ProjectReference Include="..\Fcs.Donations.Infrastructure.Http\Fcs.Donations.Infrastructure.Http.csproj" />
+    <ProjectReference Include="..\Fcs.Donations.Infrastructure.Auth\Fcs.Donations.Infrastructure.Auth.csproj" />
+    <ProjectReference Include="..\Fcs.Donations.Infrastructure.SqlServer\Fcs.Donations.Infrastructure.SqlServer.csproj" />
 
-    <ProjectReference Include="..\fcs.Donations.Infrastructure.Kafka\fcs.Donations.Infrastructure.Kafka.csproj" />
+    <ProjectReference Include="..\Fcs.Donations.Infrastructure.Kafka\Fcs.Donations.Infrastructure.Kafka.csproj" />
   </ItemGroup>
 </Project>

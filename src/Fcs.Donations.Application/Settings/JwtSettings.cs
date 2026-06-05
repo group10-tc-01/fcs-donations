@@ -1,4 +1,4 @@
-namespace fcs.Donations.Application.Settings;
+namespace Fcs.Donations.Application.Settings;
 
 public sealed class JwtSettings
 {

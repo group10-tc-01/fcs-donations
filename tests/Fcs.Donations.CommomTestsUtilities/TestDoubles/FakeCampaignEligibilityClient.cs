@@ -1,6 +1,6 @@
-using fcs.Donations.Application.Abstractions.ExternalServices;
+using Fcs.Donations.Application.Abstractions.ExternalServices;
 
-namespace fcs.Donations.CommomTestsUtilities.TestDoubles;
+namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 
 public sealed class FakeCampaignEligibilityClient : ICampaignEligibilityClient
 {

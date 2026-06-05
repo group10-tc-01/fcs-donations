@@ -7,7 +7,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\fcs.Donations.Domain\fcs.Donations.Domain.csproj" />
-    <ProjectReference Include="..\fcs.Donations.Messages\fcs.Donations.Messages.csproj" />
+    <ProjectReference Include="..\Fcs.Donations.Domain\Fcs.Donations.Domain.csproj" />
+    <ProjectReference Include="..\Fcs.Donations.Messages\Fcs.Donations.Messages.csproj" />
   </ItemGroup>
 </Project>

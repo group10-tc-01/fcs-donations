@@ -1,4 +1,4 @@
-namespace fcs.Donations.Domain.Donations;
+namespace Fcs.Donations.Domain.Donations;
 
 public enum DonationStatus
 {

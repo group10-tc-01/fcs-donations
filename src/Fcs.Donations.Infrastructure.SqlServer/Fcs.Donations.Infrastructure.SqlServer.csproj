@@ -10,6 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\fcs.Donations.Domain\fcs.Donations.Domain.csproj" />
+    <ProjectReference Include="..\Fcs.Donations.Domain\Fcs.Donations.Domain.csproj" />
   </ItemGroup>
 </Project>

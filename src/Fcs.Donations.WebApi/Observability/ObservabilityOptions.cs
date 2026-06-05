@@ -1,8 +1,8 @@
-namespace fcs.Donations.WebApi.Observability;
+namespace Fcs.Donations.WebApi.Observability;
 
 public sealed class ObservabilityOptions
 {
     public const string SectionName = "Observability";
 
-    public string ServiceName { get; set; } = "fcs.Donations";
+    public string ServiceName { get; set; } = "Fcs.Donations";
 }

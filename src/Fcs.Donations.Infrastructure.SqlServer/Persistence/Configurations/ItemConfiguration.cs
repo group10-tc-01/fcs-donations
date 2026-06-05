@@ -1,8 +1,8 @@
-using fcs.Donations.Domain.Items;
+using Fcs.Donations.Domain.Items;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace fcs.Donations.Infrastructure.SqlServer.Persistence.Configurations;
+namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Configurations;
 
 public sealed class ItemConfiguration : IEntityTypeConfiguration<Item>
 {

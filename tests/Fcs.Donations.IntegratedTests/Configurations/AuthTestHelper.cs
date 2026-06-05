@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace fcs.Donations.IntegratedTests.Configurations;
+namespace Fcs.Donations.IntegratedTests.Configurations;
 
 public static class AuthTestHelper
 {
@@ -20,8 +20,8 @@ public static class AuthTestHelper
         };
 
         var token = new JwtSecurityToken(
-            issuer: "fcs.Donations",
-            audience: "fcs.Donations.Client",
+            issuer: "Fcs.Donations",
+            audience: "Fcs.Donations.Client",
             claims: claims,
             expires: DateTime.UtcNow.AddHours(1),
             signingCredentials: credentials);

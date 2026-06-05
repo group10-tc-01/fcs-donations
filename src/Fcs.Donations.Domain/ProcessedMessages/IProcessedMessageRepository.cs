@@ -1,4 +1,4 @@
-namespace fcs.Donations.Domain.ProcessedMessages;
+namespace Fcs.Donations.Domain.ProcessedMessages;
 
 public interface IProcessedMessageRepository
 {

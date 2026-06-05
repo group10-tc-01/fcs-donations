@@ -1,8 +1,8 @@
-using fcs.Donations.Domain;
-using fcs.Donations.Domain.Donations;
+using Fcs.Donations.Domain;
+using Fcs.Donations.Domain.Donations;
 using FluentAssertions;
 
-namespace fcs.Donations.UnitTests.Domain.Donations;
+namespace Fcs.Donations.UnitTests.Domain.Donations;
 
 public sealed class DonationTests
 {

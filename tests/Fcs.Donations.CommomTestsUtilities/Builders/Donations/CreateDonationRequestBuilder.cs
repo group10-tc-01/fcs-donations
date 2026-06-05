@@ -1,7 +1,7 @@
 using Bogus;
-using fcs.Donations.Application.UseCases.Donations.CreateDonation;
+using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
 
-namespace fcs.Donations.CommomTestsUtilities.Builders.Donations;
+namespace Fcs.Donations.CommomTestsUtilities.Builders.Donations;
 
 public sealed class CreateDonationRequestBuilder
 {

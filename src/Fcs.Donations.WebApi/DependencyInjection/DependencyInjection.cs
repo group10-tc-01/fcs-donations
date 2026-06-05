@@ -1,6 +1,6 @@
 using Asp.Versioning;
-using fcs.Donations.WebApi.Middlewares;
-using fcs.Donations.WebApi.Observability;
+using Fcs.Donations.WebApi.Middlewares;
+using Fcs.Donations.WebApi.Observability;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
@@ -9,7 +9,7 @@ using OpenTelemetry.Trace;
 using Serilog;
 using System.Text.Json.Serialization;
 
-namespace fcs.Donations.WebApi.DependencyInjection;
+namespace Fcs.Donations.WebApi.DependencyInjection;
 
 public static class DependencyInjection
 {
@@ -36,7 +36,7 @@ public static class DependencyInjection
         {
             options.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "fcs.Donations API",
+                Title = "Fcs.Donations API",
                 Version = "v1"
             });
         });

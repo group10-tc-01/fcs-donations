@@ -1,7 +1,7 @@
-using fcs.Donations.Domain.Donations;
+using Fcs.Donations.Domain.Donations;
 using Microsoft.EntityFrameworkCore;
 
-namespace fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
+namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
 
 public sealed class DonationRepository : IDonationRepository
 {

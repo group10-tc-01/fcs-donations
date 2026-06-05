@@ -1,11 +1,11 @@
-using fcs.Donations.Application.UseCases.Donations.CreateDonation;
-using fcs.Donations.WebApi.Extensions;
-using fcs.Donations.WebApi.Models;
+using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
+using Fcs.Donations.WebApi.Extensions;
+using Fcs.Donations.WebApi.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace fcs.Donations.WebApi.Controllers.v1;
+namespace Fcs.Donations.WebApi.Controllers.v1;
 
 [Authorize(Roles = "Doador")]
 public sealed class DonationsController : BaseApiController

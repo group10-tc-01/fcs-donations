@@ -1,4 +1,4 @@
-namespace fcs.Donations.Application.Abstractions.Messaging;
+namespace Fcs.Donations.Application.Abstractions.Messaging;
 
 public interface IMessagePublisher
 {

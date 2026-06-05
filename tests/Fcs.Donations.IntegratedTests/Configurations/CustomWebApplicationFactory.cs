@@ -1,16 +1,16 @@
-using fcs.Donations.Application.Abstractions.Authentication;
-using fcs.Donations.Application.Abstractions.ExternalServices;
-using fcs.Donations.CommomTestsUtilities.TestDoubles;
-using fcs.Donations.Domain.Abstractions;
-using fcs.Donations.Domain.Donations;
-using fcs.Donations.Domain.OutboxMessages;
-using fcs.Donations.WebApi;
+using Fcs.Donations.Application.Abstractions.Authentication;
+using Fcs.Donations.Application.Abstractions.ExternalServices;
+using Fcs.Donations.CommomTestsUtilities.TestDoubles;
+using Fcs.Donations.Domain.Abstractions;
+using Fcs.Donations.Domain.Donations;
+using Fcs.Donations.Domain.OutboxMessages;
+using Fcs.Donations.WebApi;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace fcs.Donations.IntegratedTests.Configurations;
+namespace Fcs.Donations.IntegratedTests.Configurations;
 
 public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {

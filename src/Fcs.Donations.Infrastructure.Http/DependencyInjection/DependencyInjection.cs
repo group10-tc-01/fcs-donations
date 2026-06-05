@@ -1,6 +1,6 @@
-using fcs.Donations.Application.Abstractions.ExternalServices;
-using fcs.Donations.Infrastructure.Http.CampaignEligibility;
-using fcs.Donations.Infrastructure.Http.Settings;
+using Fcs.Donations.Application.Abstractions.ExternalServices;
+using Fcs.Donations.Infrastructure.Http.CampaignEligibility;
+using Fcs.Donations.Infrastructure.Http.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -8,7 +8,7 @@ using Polly;
 using Polly.Extensions.Http;
 using Refit;
 
-namespace fcs.Donations.Infrastructure.Http.DependencyInjection;
+namespace Fcs.Donations.Infrastructure.Http.DependencyInjection;
 
 public static class DependencyInjection
 {

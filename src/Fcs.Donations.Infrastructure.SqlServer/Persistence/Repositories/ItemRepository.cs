@@ -1,7 +1,7 @@
-using fcs.Donations.Domain.Items;
+using Fcs.Donations.Domain.Items;
 using Microsoft.EntityFrameworkCore;
 
-namespace fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
+namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
 
 public sealed class ItemRepository : IItemRepository
 {

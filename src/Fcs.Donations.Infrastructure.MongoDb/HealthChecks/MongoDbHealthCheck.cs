@@ -2,7 +2,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace fcs.Donations.Infrastructure.MongoDb.HealthChecks;
+namespace Fcs.Donations.Infrastructure.MongoDb.HealthChecks;
 
 public sealed class MongoDbHealthCheck : IHealthCheck
 {

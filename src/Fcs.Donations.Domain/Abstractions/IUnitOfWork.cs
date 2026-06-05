@@ -1,4 +1,4 @@
-namespace fcs.Donations.Domain.Abstractions;
+namespace Fcs.Donations.Domain.Abstractions;
 
 public interface IUnitOfWork
 {

@@ -7,6 +7,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\fcs.Donations.Application\fcs.Donations.Application.csproj" />
+    <ProjectReference Include="..\Fcs.Donations.Application\Fcs.Donations.Application.csproj" />
   </ItemGroup>
 </Project>

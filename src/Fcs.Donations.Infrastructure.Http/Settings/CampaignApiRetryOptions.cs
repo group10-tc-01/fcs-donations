@@ -1,4 +1,4 @@
-namespace fcs.Donations.Infrastructure.Http.Settings;
+namespace Fcs.Donations.Infrastructure.Http.Settings;
 
 public sealed class CampaignApiRetryOptions
 {

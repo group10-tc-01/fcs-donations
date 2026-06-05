@@ -1,8 +1,8 @@
-name: fcs.Donations Delivery To AKS
+name: Fcs.Donations Delivery To AKS
 
 on:
   workflow_run:
-    workflows: ["fcs.Donations CI"]
+    workflows: ["Fcs.Donations CI"]
     branches: [main]
     types: [completed]
   workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
     with:
       service_name: fcs-donations
       image_name: fcs-donations
-      dockerfile_path: src/fcs.Donations.WebApi/Dockerfile
+      dockerfile_path: src/Fcs.Donations.WebApi/Dockerfile
       docker_context: .
       azure_container_registry_name: ${{ vars.AZURE_CONTAINER_REGISTRY_NAME }}
       aks_resource_group: ${{ vars.AKS_RESOURCE_GROUP }}

@@ -1,4 +1,4 @@
-namespace fcs.Donations.Application.Abstractions.ExternalServices;
+namespace Fcs.Donations.Application.Abstractions.ExternalServices;
 
 public interface IExternalQuoteClient
 {

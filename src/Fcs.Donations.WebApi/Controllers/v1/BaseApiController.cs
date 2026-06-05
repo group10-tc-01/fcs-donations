@@ -2,7 +2,7 @@ using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace fcs.Donations.WebApi.Controllers.v1;
+namespace Fcs.Donations.WebApi.Controllers.v1;
 
 [ApiController]
 [ApiVersion("1.0")]

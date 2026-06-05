@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\fcs.Donations.Application\fcs.Donations.Application.csproj" />
-    <ProjectReference Include="..\fcs.Donations.CommomTestsUtilities\fcs.Donations.CommomTestsUtilities.csproj" />
+    <ProjectReference Include="..\..\src\Fcs.Donations.Application\Fcs.Donations.Application.csproj" />
+    <ProjectReference Include="..\Fcs.Donations.CommomTestsUtilities\Fcs.Donations.CommomTestsUtilities.csproj" />
   </ItemGroup>
 </Project>

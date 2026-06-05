@@ -1,4 +1,4 @@
-namespace fcs.Donations.Domain.Items;
+namespace Fcs.Donations.Domain.Items;
 
 public sealed class Item
 {

@@ -1,4 +1,4 @@
-# fcs.Donations
+# Fcs.Donations
 
 API generated with the **Modular Clean Architecture** template.
 
@@ -83,7 +83,7 @@ When CI/CD is enabled, pass `--serviceSlug` to define the service name used by w
 container image names, Kubernetes resource names, and the SonarCloud project key.
 
 ```bash
-dotnet new cleanarchapi -n fcs.Identity \
+dotnet new cleanarchapi -n Fcs.Identity \
   --serviceSlug fcs-identity
 ```
 
@@ -194,7 +194,7 @@ dotnet test
 
 # Start with Docker Compose (spins up selected databases and Seq)
 docker compose up -d
-dotnet run --project src/fcs.Donations.WebApi
+dotnet run --project src/Fcs.Donations.WebApi
 ```
 
 ---
@@ -203,18 +203,18 @@ dotnet run --project src/fcs.Donations.WebApi
 
 ```
 src/
-  fcs.Donations.Domain/
-  fcs.Donations.Application/
-  fcs.Donations.Messages/
-  fcs.Donations.Infrastructure.Auth/       # present if --useAuth
-  fcs.Donations.Infrastructure.SqlServer/  # present if --useSqlServer
-  fcs.Donations.Infrastructure.PostgreSql/ # present if --usePostgreSql
-  fcs.Donations.Infrastructure.MongoDb/    # present if --useMongoDB
-  fcs.Donations.Infrastructure.Kafka/      # present if --useKafka
-  fcs.Donations.WebApi/
+  Fcs.Donations.Domain/
+  Fcs.Donations.Application/
+  Fcs.Donations.Messages/
+  Fcs.Donations.Infrastructure.Auth/       # present if --useAuth
+  Fcs.Donations.Infrastructure.SqlServer/  # present if --useSqlServer
+  Fcs.Donations.Infrastructure.PostgreSql/ # present if --usePostgreSql
+  Fcs.Donations.Infrastructure.MongoDb/    # present if --useMongoDB
+  Fcs.Donations.Infrastructure.Kafka/      # present if --useKafka
+  Fcs.Donations.WebApi/
 tests/
-  fcs.Donations.CommomTestsUtilities/
-  fcs.Donations.UnitTests/
-  fcs.Donations.IntegratedTests/
-  fcs.Donations.FunctionalTests/
+  Fcs.Donations.CommomTestsUtilities/
+  Fcs.Donations.UnitTests/
+  Fcs.Donations.IntegratedTests/
+  Fcs.Donations.FunctionalTests/
 ```

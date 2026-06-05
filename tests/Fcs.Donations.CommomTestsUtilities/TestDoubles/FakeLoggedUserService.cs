@@ -1,6 +1,6 @@
-using fcs.Donations.Application.Abstractions.Authentication;
+using Fcs.Donations.Application.Abstractions.Authentication;
 
-namespace fcs.Donations.CommomTestsUtilities.TestDoubles;
+namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 
 public sealed class FakeLoggedUserService : ILoggedUserService
 {

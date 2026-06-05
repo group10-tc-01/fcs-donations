@@ -1,8 +1,8 @@
-using fcs.Donations.Domain.Donations;
+using Fcs.Donations.Domain.Donations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace fcs.Donations.Infrastructure.SqlServer.Persistence.Configurations.Donations;
+namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Configurations.Donations;
 
 public sealed class DonationConfiguration : IEntityTypeConfiguration<Donation>
 {

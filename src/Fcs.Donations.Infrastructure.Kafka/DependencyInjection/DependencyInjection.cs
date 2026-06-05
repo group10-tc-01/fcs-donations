@@ -1,10 +1,10 @@
-using fcs.Donations.Application.Abstractions.Messaging;
-using fcs.Donations.Infrastructure.Kafka.Messaging;
-using fcs.Donations.Infrastructure.Kafka.Settings;
+using Fcs.Donations.Application.Abstractions.Messaging;
+using Fcs.Donations.Infrastructure.Kafka.Messaging;
+using Fcs.Donations.Infrastructure.Kafka.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace fcs.Donations.Infrastructure.Kafka.DependencyInjection;
+namespace Fcs.Donations.Infrastructure.Kafka.DependencyInjection;
 
 public static class DependencyInjection
 {

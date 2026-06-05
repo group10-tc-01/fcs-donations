@@ -1,4 +1,4 @@
-namespace fcs.Donations.Messages;
+namespace Fcs.Donations.Messages;
 
 public sealed record DonationReceivedEvent(
     Guid EventId,

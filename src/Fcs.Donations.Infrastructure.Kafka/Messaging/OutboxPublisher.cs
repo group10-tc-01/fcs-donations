@@ -1,9 +1,9 @@
-using fcs.Donations.Domain.OutboxMessages;
+using Fcs.Donations.Domain.OutboxMessages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace fcs.Donations.Infrastructure.Kafka.Messaging;
+namespace Fcs.Donations.Infrastructure.Kafka.Messaging;
 
 public sealed class OutboxPublisher : BackgroundService
 {

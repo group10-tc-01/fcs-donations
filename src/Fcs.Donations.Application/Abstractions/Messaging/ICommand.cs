@@ -1,7 +1,7 @@
 using MediatR;
-using fcs.Donations.Domain;
+using Fcs.Donations.Domain;
 
-namespace fcs.Donations.Application.Abstractions.Messaging;
+namespace Fcs.Donations.Application.Abstractions.Messaging;
 
 public interface ICommand<TResponse> : IRequest<Result<TResponse>>
 {

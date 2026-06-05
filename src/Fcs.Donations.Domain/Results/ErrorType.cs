@@ -1,4 +1,4 @@
-namespace fcs.Donations.Domain;
+namespace Fcs.Donations.Domain;
 
 public enum ErrorType
 {

@@ -1,8 +1,8 @@
-using fcs.Donations.Application.Abstractions.Authentication;
+using Fcs.Donations.Application.Abstractions.Authentication;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace fcs.Donations.Infrastructure.Auth.Authentication;
+namespace Fcs.Donations.Infrastructure.Auth.Authentication;
 
 public sealed class LoggedUserService : ILoggedUserService
 {

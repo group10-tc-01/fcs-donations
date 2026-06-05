@@ -1,6 +1,6 @@
-using fcs.Donations.Domain.Donations;
+using Fcs.Donations.Domain.Donations;
 
-namespace fcs.Donations.CommomTestsUtilities.TestDoubles;
+namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 
 public sealed class InMemoryDonationRepository : IDonationRepository
 {

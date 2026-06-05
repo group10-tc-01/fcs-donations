@@ -1,8 +1,8 @@
-using fcs.Donations.WebApi.Models;
+using Fcs.Donations.WebApi.Models;
 using System.Net;
 using System.Text.Json;
 
-namespace fcs.Donations.WebApi.Middlewares;
+namespace Fcs.Donations.WebApi.Middlewares;
 
 public sealed class GlobalExceptionMiddleware
 {

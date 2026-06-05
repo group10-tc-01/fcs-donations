@@ -1,10 +1,10 @@
-using fcs.Donations.Application.UseCases.Donations.CreateDonation;
-using fcs.Donations.CommomTestsUtilities.Builders.Donations;
-using fcs.Donations.CommomTestsUtilities.TestDoubles;
+using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
+using Fcs.Donations.CommomTestsUtilities.Builders.Donations;
+using Fcs.Donations.CommomTestsUtilities.TestDoubles;
 using FluentAssertions;
 using Reqnroll;
 
-namespace fcs.Donations.FunctionalTests.Steps.Donations;
+namespace Fcs.Donations.FunctionalTests.Steps.Donations;
 
 [Binding]
 public sealed class CreateDonationStepDefinitions

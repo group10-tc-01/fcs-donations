@@ -1,6 +1,6 @@
-using fcs.Donations.Application.Abstractions.Messaging;
+using Fcs.Donations.Application.Abstractions.Messaging;
 
-namespace fcs.Donations.Application.UseCases.Donations.CreateDonation;
+namespace Fcs.Donations.Application.UseCases.Donations.CreateDonation;
 
 public interface ICreateDonationUseCase : ICommandHandler<CreateDonationRequest, CreateDonationResponse>
 {

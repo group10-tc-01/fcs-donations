@@ -1,6 +1,6 @@
-using fcs.Donations.Application.Abstractions.ExternalServices;
+using Fcs.Donations.Application.Abstractions.ExternalServices;
 
-namespace fcs.Donations.Infrastructure.Http.CampaignEligibility;
+namespace Fcs.Donations.Infrastructure.Http.CampaignEligibility;
 
 public sealed class CampaignEligibilityClient : ICampaignEligibilityClient
 {

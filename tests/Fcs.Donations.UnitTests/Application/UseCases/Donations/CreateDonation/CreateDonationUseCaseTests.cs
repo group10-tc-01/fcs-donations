@@ -1,10 +1,10 @@
-using fcs.Donations.Application.UseCases.Donations.CreateDonation;
-using fcs.Donations.CommomTestsUtilities.Builders.Donations;
-using fcs.Donations.CommomTestsUtilities.TestDoubles;
-using fcs.Donations.Domain;
+using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
+using Fcs.Donations.CommomTestsUtilities.Builders.Donations;
+using Fcs.Donations.CommomTestsUtilities.TestDoubles;
+using Fcs.Donations.Domain;
 using FluentAssertions;
 
-namespace fcs.Donations.UnitTests.Application.UseCases.Donations.CreateDonation;
+namespace Fcs.Donations.UnitTests.Application.UseCases.Donations.CreateDonation;
 
 public sealed class CreateDonationUseCaseTests
 {

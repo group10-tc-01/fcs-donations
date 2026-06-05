@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace fcs.Donations.FunctionalTests.Features
+namespace Fcs.Donations.FunctionalTests.Features
 {
     using Reqnroll;
     using System;

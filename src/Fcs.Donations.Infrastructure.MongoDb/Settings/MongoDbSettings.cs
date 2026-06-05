@@ -1,4 +1,4 @@
-namespace fcs.Donations.Infrastructure.MongoDb.Settings;
+namespace Fcs.Donations.Infrastructure.MongoDb.Settings;
 
 public sealed class MongoDbSettings
 {

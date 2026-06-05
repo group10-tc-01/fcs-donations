@@ -1,6 +1,6 @@
-using fcs.Donations.Application.Abstractions.Messaging;
+using Fcs.Donations.Application.Abstractions.Messaging;
 
-namespace fcs.Donations.Application.UseCases.Items.GetItemById;
+namespace Fcs.Donations.Application.UseCases.Items.GetItemById;
 
 public interface IGetItemByIdUseCase : IQueryHandler<GetItemByIdRequest, GetItemByIdResponse>
 {

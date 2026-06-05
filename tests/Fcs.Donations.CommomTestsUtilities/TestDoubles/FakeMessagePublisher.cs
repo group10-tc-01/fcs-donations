@@ -1,6 +1,6 @@
-using fcs.Donations.Application.Abstractions.Messaging;
+using Fcs.Donations.Application.Abstractions.Messaging;
 
-namespace fcs.Donations.CommomTestsUtilities.TestDoubles;
+namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 
 public sealed class FakeMessagePublisher : IMessagePublisher
 {

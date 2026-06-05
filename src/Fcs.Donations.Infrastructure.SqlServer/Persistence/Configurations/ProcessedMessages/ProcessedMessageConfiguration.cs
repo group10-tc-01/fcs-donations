@@ -1,8 +1,8 @@
-using fcs.Donations.Domain.ProcessedMessages;
+using Fcs.Donations.Domain.ProcessedMessages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace fcs.Donations.Infrastructure.SqlServer.Persistence.Configurations.ProcessedMessages;
+namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Configurations.ProcessedMessages;
 
 public sealed class ProcessedMessageConfiguration : IEntityTypeConfiguration<ProcessedMessage>
 {

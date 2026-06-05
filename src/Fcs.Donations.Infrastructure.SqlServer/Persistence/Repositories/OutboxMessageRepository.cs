@@ -1,7 +1,7 @@
-using fcs.Donations.Domain.OutboxMessages;
+using Fcs.Donations.Domain.OutboxMessages;
 using Microsoft.EntityFrameworkCore;
 
-namespace fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
+namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
 
 public sealed class OutboxMessageRepository : IOutboxMessageRepository
 {

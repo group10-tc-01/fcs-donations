@@ -1,6 +1,6 @@
-using fcs.Donations.Domain.Abstractions;
+using Fcs.Donations.Domain.Abstractions;
 
-namespace fcs.Donations.CommomTestsUtilities.TestDoubles;
+namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 
 public sealed class FakeUnitOfWork : IUnitOfWork
 {

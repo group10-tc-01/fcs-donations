@@ -1,4 +1,4 @@
-namespace fcs.Donations.Infrastructure.Kafka.Settings;
+namespace Fcs.Donations.Infrastructure.Kafka.Settings;
 
 public sealed class KafkaSettings
 {

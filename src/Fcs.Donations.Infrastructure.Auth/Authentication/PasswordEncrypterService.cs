@@ -1,6 +1,6 @@
-using fcs.Donations.Application.Abstractions.Authentication;
+using Fcs.Donations.Application.Abstractions.Authentication;
 
-namespace fcs.Donations.Infrastructure.Auth.Authentication;
+namespace Fcs.Donations.Infrastructure.Auth.Authentication;
 
 public sealed class PasswordEncrypterService : IPasswordEncrypterService
 {

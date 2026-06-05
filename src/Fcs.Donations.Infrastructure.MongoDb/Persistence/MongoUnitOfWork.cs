@@ -1,6 +1,6 @@
-using fcs.Donations.Domain.Abstractions;
+using Fcs.Donations.Domain.Abstractions;
 
-namespace fcs.Donations.Infrastructure.MongoDb.Persistence;
+namespace Fcs.Donations.Infrastructure.MongoDb.Persistence;
 
 public sealed class MongoUnitOfWork : IUnitOfWork
 {

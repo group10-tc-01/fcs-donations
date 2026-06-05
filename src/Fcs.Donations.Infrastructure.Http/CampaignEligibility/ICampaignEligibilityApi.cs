@@ -1,6 +1,6 @@
 using Refit;
 
-namespace fcs.Donations.Infrastructure.Http.CampaignEligibility;
+namespace Fcs.Donations.Infrastructure.Http.CampaignEligibility;
 
 public sealed record DonationEligibilityResponse(bool IsEligible, string? Reason);
 

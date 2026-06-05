@@ -1,14 +1,14 @@
-using fcs.Donations.Application.Abstractions.Authentication;
-using fcs.Donations.Application.Abstractions.ExternalServices;
-using fcs.Donations.Application.Abstractions.Messaging;
-using fcs.Donations.Domain;
-using fcs.Donations.Domain.Abstractions;
-using fcs.Donations.Domain.Donations;
-using fcs.Donations.Domain.OutboxMessages;
-using fcs.Donations.Messages;
+using Fcs.Donations.Application.Abstractions.Authentication;
+using Fcs.Donations.Application.Abstractions.ExternalServices;
+using Fcs.Donations.Application.Abstractions.Messaging;
+using Fcs.Donations.Domain;
+using Fcs.Donations.Domain.Abstractions;
+using Fcs.Donations.Domain.Donations;
+using Fcs.Donations.Domain.OutboxMessages;
+using Fcs.Donations.Messages;
 using System.Text.Json;
 
-namespace fcs.Donations.Application.UseCases.Donations.CreateDonation;
+namespace Fcs.Donations.Application.UseCases.Donations.CreateDonation;
 
 public sealed class CreateDonationUseCase : ICreateDonationUseCase
 {

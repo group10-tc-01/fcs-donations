@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\fcs.Donations.WebApi\fcs.Donations.WebApi.csproj" />
-    <ProjectReference Include="..\fcs.Donations.CommomTestsUtilities\fcs.Donations.CommomTestsUtilities.csproj" />
+    <ProjectReference Include="..\..\src\Fcs.Donations.WebApi\Fcs.Donations.WebApi.csproj" />
+    <ProjectReference Include="..\Fcs.Donations.CommomTestsUtilities\Fcs.Donations.CommomTestsUtilities.csproj" />
   </ItemGroup>
 </Project>

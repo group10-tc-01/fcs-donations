@@ -1,10 +1,10 @@
-using fcs.Donations.Application.Abstractions.Messaging;
-using fcs.Donations.Domain;
-using fcs.Donations.Domain.Abstractions;
-using fcs.Donations.Domain.Items;
-using fcs.Donations.Messages;
+using Fcs.Donations.Application.Abstractions.Messaging;
+using Fcs.Donations.Domain;
+using Fcs.Donations.Domain.Abstractions;
+using Fcs.Donations.Domain.Items;
+using Fcs.Donations.Messages;
 
-namespace fcs.Donations.Application.UseCases.Items.CreateItem;
+namespace Fcs.Donations.Application.UseCases.Items.CreateItem;
 
 public sealed class CreateItemUseCase : ICreateItemUseCase
 {

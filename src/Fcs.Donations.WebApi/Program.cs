@@ -1,11 +1,11 @@
-using fcs.Donations.Application.DependencyInjection;
-using fcs.Donations.Infrastructure.Auth.DependencyInjection;
-using fcs.Donations.Infrastructure.Http.DependencyInjection;
-using fcs.Donations.Infrastructure.Kafka.DependencyInjection;
-using fcs.Donations.Infrastructure.SqlServer.DependencyInjection;
-using fcs.Donations.WebApi.DependencyInjection;
+using Fcs.Donations.Application.DependencyInjection;
+using Fcs.Donations.Infrastructure.Auth.DependencyInjection;
+using Fcs.Donations.Infrastructure.Http.DependencyInjection;
+using Fcs.Donations.Infrastructure.Kafka.DependencyInjection;
+using Fcs.Donations.Infrastructure.SqlServer.DependencyInjection;
+using Fcs.Donations.WebApi.DependencyInjection;
 
-namespace fcs.Donations.WebApi;
+namespace Fcs.Donations.WebApi;
 
 public class Program
 {

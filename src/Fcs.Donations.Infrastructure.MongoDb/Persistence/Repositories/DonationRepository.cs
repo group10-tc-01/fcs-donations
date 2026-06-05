@@ -1,7 +1,7 @@
-using fcs.Donations.Domain.Donations;
+using Fcs.Donations.Domain.Donations;
 using MongoDB.Driver;
 
-namespace fcs.Donations.Infrastructure.MongoDb.Persistence.Repositories;
+namespace Fcs.Donations.Infrastructure.MongoDb.Persistence.Repositories;
 
 public sealed class DonationRepository : IDonationRepository
 {

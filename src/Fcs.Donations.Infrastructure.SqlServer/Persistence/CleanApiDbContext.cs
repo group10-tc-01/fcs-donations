@@ -1,11 +1,11 @@
-using fcs.Donations.Domain.Abstractions;
-using fcs.Donations.Domain.Donations;
-using fcs.Donations.Domain.Items;
-using fcs.Donations.Domain.OutboxMessages;
-using fcs.Donations.Domain.ProcessedMessages;
+using Fcs.Donations.Domain.Abstractions;
+using Fcs.Donations.Domain.Donations;
+using Fcs.Donations.Domain.Items;
+using Fcs.Donations.Domain.OutboxMessages;
+using Fcs.Donations.Domain.ProcessedMessages;
 using Microsoft.EntityFrameworkCore;
 
-namespace fcs.Donations.Infrastructure.SqlServer.Persistence;
+namespace Fcs.Donations.Infrastructure.SqlServer.Persistence;
 
 public sealed class CleanApiDbContext : DbContext, IUnitOfWork
 {

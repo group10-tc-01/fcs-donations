@@ -1,13 +1,13 @@
-using fcs.Donations.Application.Abstractions.Authentication;
-using fcs.Donations.Application.Settings;
-using fcs.Donations.Infrastructure.Auth.Authentication;
+using Fcs.Donations.Application.Abstractions.Authentication;
+using Fcs.Donations.Application.Settings;
+using Fcs.Donations.Infrastructure.Auth.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace fcs.Donations.Infrastructure.Auth.DependencyInjection;
+namespace Fcs.Donations.Infrastructure.Auth.DependencyInjection;
 
 public static class DependencyInjection
 {

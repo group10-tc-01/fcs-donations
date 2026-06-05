@@ -1,15 +1,15 @@
-using fcs.Donations.Domain.Abstractions;
-using fcs.Donations.Domain.Donations;
-using fcs.Donations.Domain.Items;
-using fcs.Donations.Domain.OutboxMessages;
-using fcs.Donations.Domain.ProcessedMessages;
-using fcs.Donations.Infrastructure.SqlServer.Persistence;
-using fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
+using Fcs.Donations.Domain.Abstractions;
+using Fcs.Donations.Domain.Donations;
+using Fcs.Donations.Domain.Items;
+using Fcs.Donations.Domain.OutboxMessages;
+using Fcs.Donations.Domain.ProcessedMessages;
+using Fcs.Donations.Infrastructure.SqlServer.Persistence;
+using Fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace fcs.Donations.Infrastructure.SqlServer.DependencyInjection;
+namespace Fcs.Donations.Infrastructure.SqlServer.DependencyInjection;
 
 public static class DependencyInjection
 {

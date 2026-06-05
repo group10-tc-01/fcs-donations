@@ -1,4 +1,4 @@
-namespace fcs.Donations.Application.Abstractions.Authentication;
+namespace Fcs.Donations.Application.Abstractions.Authentication;
 
 public interface ITokenProviderService
 {

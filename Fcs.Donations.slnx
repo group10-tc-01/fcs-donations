@@ -11,20 +11,20 @@
     <File Path="README.md" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src/fcs.Donations.Application/fcs.Donations.Application.csproj" />
-    <Project Path="src/fcs.Donations.Domain/fcs.Donations.Domain.csproj" />
-    <Project Path="src/fcs.Donations.Infrastructure.Auth/fcs.Donations.Infrastructure.Auth.csproj" />
-    <Project Path="src/fcs.Donations.Infrastructure.Http/fcs.Donations.Infrastructure.Http.csproj" />
-    <Project Path="src/fcs.Donations.Infrastructure.Kafka/fcs.Donations.Infrastructure.Kafka.csproj" />
-    <Project Path="src/fcs.Donations.Infrastructure.MongoDb/fcs.Donations.Infrastructure.MongoDb.csproj" />
-    <Project Path="src/fcs.Donations.Infrastructure.SqlServer/fcs.Donations.Infrastructure.SqlServer.csproj" />
-    <Project Path="src/fcs.Donations.Messages/fcs.Donations.Messages.csproj" />
-    <Project Path="src/fcs.Donations.WebApi/fcs.Donations.WebApi.csproj" />
+    <Project Path="src/Fcs.Donations.Application/Fcs.Donations.Application.csproj" />
+    <Project Path="src/Fcs.Donations.Domain/Fcs.Donations.Domain.csproj" />
+    <Project Path="src/Fcs.Donations.Infrastructure.Auth/Fcs.Donations.Infrastructure.Auth.csproj" />
+    <Project Path="src/Fcs.Donations.Infrastructure.Http/Fcs.Donations.Infrastructure.Http.csproj" />
+    <Project Path="src/Fcs.Donations.Infrastructure.Kafka/Fcs.Donations.Infrastructure.Kafka.csproj" />
+    <Project Path="src/Fcs.Donations.Infrastructure.MongoDb/Fcs.Donations.Infrastructure.MongoDb.csproj" />
+    <Project Path="src/Fcs.Donations.Infrastructure.SqlServer/Fcs.Donations.Infrastructure.SqlServer.csproj" />
+    <Project Path="src/Fcs.Donations.Messages/Fcs.Donations.Messages.csproj" />
+    <Project Path="src/Fcs.Donations.WebApi/Fcs.Donations.WebApi.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/fcs.Donations.CommomTestsUtilities/fcs.Donations.CommomTestsUtilities.csproj" />
-    <Project Path="tests/fcs.Donations.FunctionalTests/fcs.Donations.FunctionalTests.csproj" />
-    <Project Path="tests/fcs.Donations.IntegratedTests/fcs.Donations.IntegratedTests.csproj" />
-    <Project Path="tests/fcs.Donations.UnitTests/fcs.Donations.UnitTests.csproj" />
+    <Project Path="tests/Fcs.Donations.CommomTestsUtilities/Fcs.Donations.CommomTestsUtilities.csproj" />
+    <Project Path="tests/Fcs.Donations.FunctionalTests/Fcs.Donations.FunctionalTests.csproj" />
+    <Project Path="tests/Fcs.Donations.IntegratedTests/Fcs.Donations.IntegratedTests.csproj" />
+    <Project Path="tests/Fcs.Donations.UnitTests/Fcs.Donations.UnitTests.csproj" />
   </Folder>
 </Solution>

@@ -1,12 +1,12 @@
-using fcs.Donations.Application.Abstractions.Authentication;
-using fcs.Donations.Application.Settings;
+using Fcs.Donations.Application.Abstractions.Authentication;
+using Fcs.Donations.Application.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace fcs.Donations.Infrastructure.Auth.Authentication;
+namespace Fcs.Donations.Infrastructure.Auth.Authentication;
 
 public sealed class TokenProviderService : ITokenProviderService
 {

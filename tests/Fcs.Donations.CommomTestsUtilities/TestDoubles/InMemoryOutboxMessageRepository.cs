@@ -1,6 +1,6 @@
-using fcs.Donations.Domain.OutboxMessages;
+using Fcs.Donations.Domain.OutboxMessages;
 
-namespace fcs.Donations.CommomTestsUtilities.TestDoubles;
+namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 
 public sealed class InMemoryOutboxMessageRepository : IOutboxMessageRepository
 {

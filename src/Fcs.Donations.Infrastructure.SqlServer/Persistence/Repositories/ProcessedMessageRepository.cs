@@ -1,7 +1,7 @@
-using fcs.Donations.Domain.ProcessedMessages;
+using Fcs.Donations.Domain.ProcessedMessages;
 using Microsoft.EntityFrameworkCore;
 
-namespace fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
+namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
 
 public sealed class ProcessedMessageRepository : IProcessedMessageRepository
 {

@@ -1,8 +1,8 @@
-using fcs.Donations.Domain;
-using fcs.Donations.WebApi.Models;
+using Fcs.Donations.Domain;
+using Fcs.Donations.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace fcs.Donations.WebApi.Extensions;
+namespace Fcs.Donations.WebApi.Extensions;
 
 public static class ErrorExtensions
 {

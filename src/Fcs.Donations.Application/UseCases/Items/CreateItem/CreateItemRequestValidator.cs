@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace fcs.Donations.Application.UseCases.Items.CreateItem;
+namespace Fcs.Donations.Application.UseCases.Items.CreateItem;
 
 public sealed class CreateItemRequestValidator : AbstractValidator<CreateItemRequest>
 {

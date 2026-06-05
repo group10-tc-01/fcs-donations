@@ -1,4 +1,4 @@
-namespace fcs.Donations.WebApi.Models;
+namespace Fcs.Donations.WebApi.Models;
 
 public sealed class ApiResponse<T>
 {

@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "fcs.Donations.WebApi": {
+    "Fcs.Donations.WebApi": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

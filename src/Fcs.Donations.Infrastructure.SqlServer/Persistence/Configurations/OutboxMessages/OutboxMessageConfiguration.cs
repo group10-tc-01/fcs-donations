@@ -1,8 +1,8 @@
-using fcs.Donations.Domain.OutboxMessages;
+using Fcs.Donations.Domain.OutboxMessages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace fcs.Donations.Infrastructure.SqlServer.Persistence.Configurations.OutboxMessages;
+namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Configurations.OutboxMessages;
 
 public sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage>
 {

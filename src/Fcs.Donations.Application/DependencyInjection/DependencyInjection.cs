@@ -1,10 +1,10 @@
-using fcs.Donations.Application.Abstractions.Messaging;
-using fcs.Donations.Application.Messaging;
+using Fcs.Donations.Application.Abstractions.Messaging;
+using Fcs.Donations.Application.Messaging;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace fcs.Donations.Application.DependencyInjection;
+namespace Fcs.Donations.Application.DependencyInjection;
 
 public static class DependencyInjection
 {

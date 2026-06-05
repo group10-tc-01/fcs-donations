@@ -1,4 +1,4 @@
-namespace fcs.Donations.Domain.OutboxMessages;
+namespace Fcs.Donations.Domain.OutboxMessages;
 
 public sealed class OutboxMessage
 {

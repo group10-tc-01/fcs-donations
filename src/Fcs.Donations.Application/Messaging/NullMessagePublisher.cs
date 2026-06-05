@@ -1,6 +1,6 @@
-using fcs.Donations.Application.Abstractions.Messaging;
+using Fcs.Donations.Application.Abstractions.Messaging;
 
-namespace fcs.Donations.Application.Messaging;
+namespace Fcs.Donations.Application.Messaging;
 
 public sealed class NullMessagePublisher : IMessagePublisher
 {
