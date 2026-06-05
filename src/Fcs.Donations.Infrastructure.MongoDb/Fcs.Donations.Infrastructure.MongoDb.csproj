@@ -4,6 +4,7 @@
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
     <PackageReference Include="MongoDB.Driver" />
+    <PackageReference Include="Snappier" />
   </ItemGroup>
 
   <ItemGroup>
