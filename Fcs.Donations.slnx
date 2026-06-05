@@ -1,0 +1,30 @@
+<Solution>
+  <Folder Name="/Itens de Solução/">
+    <File Path=".dockerignore" />
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="analise-e-melhoria.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="docker-compose.yml" />
+    <File Path="nuget.config" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Fcs.Donations.Application/Fcs.Donations.Application.csproj" />
+    <Project Path="src/Fcs.Donations.Domain/Fcs.Donations.Domain.csproj" />
+    <Project Path="src/Fcs.Donations.Infrastructure.Auth/Fcs.Donations.Infrastructure.Auth.csproj" />
+    <Project Path="src/Fcs.Donations.Infrastructure.Http/Fcs.Donations.Infrastructure.Http.csproj" />
+    <Project Path="src/Fcs.Donations.Infrastructure.Kafka/Fcs.Donations.Infrastructure.Kafka.csproj" />
+    <Project Path="src/Fcs.Donations.Infrastructure.MongoDb/Fcs.Donations.Infrastructure.MongoDb.csproj" />
+    <Project Path="src/Fcs.Donations.Infrastructure.SqlServer/Fcs.Donations.Infrastructure.SqlServer.csproj" />
+    <Project Path="src/Fcs.Donations.Messages/Fcs.Donations.Messages.csproj" />
+    <Project Path="src/Fcs.Donations.WebApi/Fcs.Donations.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Fcs.Donations.CommomTestsUtilities/Fcs.Donations.CommomTestsUtilities.csproj" />
+    <Project Path="tests/Fcs.Donations.FunctionalTests/Fcs.Donations.FunctionalTests.csproj" />
+    <Project Path="tests/Fcs.Donations.IntegratedTests/Fcs.Donations.IntegratedTests.csproj" />
+    <Project Path="tests/Fcs.Donations.UnitTests/Fcs.Donations.UnitTests.csproj" />
+  </Folder>
+</Solution>

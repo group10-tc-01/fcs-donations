@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Bogus" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Fcs.Donations.Application\Fcs.Donations.Application.csproj" />
+    <ProjectReference Include="..\..\src\Fcs.Donations.Domain\Fcs.Donations.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Fcs.Donations.Messages\Fcs.Donations.Messages.csproj" />
+  </ItemGroup>
+</Project>
