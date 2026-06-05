@@ -1,4 +1,4 @@
-# Análise e Melhorias — Fcg.Donations
+# Análise e Melhorias — fcs.Donations
 
 ## 1. Registro duplicado de dependências (SqlServer + MongoDb)
 
@@ -86,8 +86,8 @@ setx JwtSettings__SecretKey "sua-chave-real-aqui"
 ```json
 // appsettings.json — remover a linha SecretKey ou deixar vazia
 "JwtSettings": {
-  "Issuer": "Fcg.Donations",
-  "Audience": "Fcg.Donations.Client",
+  "Issuer": "fcs.Donations",
+  "Audience": "fcs.Donations.Client",
   "AccessTokenExpirationMinutes": 60
 }
 ```

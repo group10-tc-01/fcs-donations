@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Http" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
+    <PackageReference Include="Serilog.AspNetCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\fcs.Donations.Application\fcs.Donations.Application.csproj" />
+    <ProjectReference Include="..\fcs.Donations.Infrastructure.Http\fcs.Donations.Infrastructure.Http.csproj" />
+    <ProjectReference Include="..\fcs.Donations.Infrastructure.Auth\fcs.Donations.Infrastructure.Auth.csproj" />
+    <ProjectReference Include="..\fcs.Donations.Infrastructure.SqlServer\fcs.Donations.Infrastructure.SqlServer.csproj" />
+
+    <ProjectReference Include="..\fcs.Donations.Infrastructure.Kafka\fcs.Donations.Infrastructure.Kafka.csproj" />
+  </ItemGroup>
+</Project>

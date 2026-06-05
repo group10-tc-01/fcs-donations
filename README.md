@@ -1,4 +1,4 @@
-# Fcg.Donations
+# fcs.Donations
 
 API generated with the **Modular Clean Architecture** template.
 
@@ -75,7 +75,7 @@ All options are boolean flags. Pass `--<flag>` to enable or `--<flag> false` to 
 | `--useOpenTelemetry` | `true` | OpenTelemetry tracing and metrics |
 | `--useSwagger` | `true` | Swashbuckle + API versioning |
 | `--useAuth` | `true` | JWT Bearer authentication + BCrypt |
-| `--useCiCd` | `true` | GitHub Actions wrappers for `fcg-pipelines` reusable CI/CD workflows |
+| `--useCiCd` | `true` | GitHub Actions wrappers for `fcs-pipelines` reusable CI/CD workflows |
 
 ### CI/CD naming
 
@@ -83,8 +83,8 @@ When CI/CD is enabled, pass `--serviceSlug` to define the service name used by w
 container image names, Kubernetes resource names, and the SonarCloud project key.
 
 ```bash
-dotnet new cleanarchapi -n Fcg.Identity \
-  --serviceSlug fcg-identity
+dotnet new cleanarchapi -n fcs.Identity \
+  --serviceSlug fcs-identity
 ```
 
 ---
@@ -194,7 +194,7 @@ dotnet test
 
 # Start with Docker Compose (spins up selected databases and Seq)
 docker compose up -d
-dotnet run --project src/Fcg.Donations.WebApi
+dotnet run --project src/fcs.Donations.WebApi
 ```
 
 ---
@@ -203,18 +203,18 @@ dotnet run --project src/Fcg.Donations.WebApi
 
 ```
 src/
-  Fcg.Donations.Domain/
-  Fcg.Donations.Application/
-  Fcg.Donations.Messages/
-  Fcg.Donations.Infrastructure.Auth/       # present if --useAuth
-  Fcg.Donations.Infrastructure.SqlServer/  # present if --useSqlServer
-  Fcg.Donations.Infrastructure.PostgreSql/ # present if --usePostgreSql
-  Fcg.Donations.Infrastructure.MongoDb/    # present if --useMongoDB
-  Fcg.Donations.Infrastructure.Kafka/      # present if --useKafka
-  Fcg.Donations.WebApi/
+  fcs.Donations.Domain/
+  fcs.Donations.Application/
+  fcs.Donations.Messages/
+  fcs.Donations.Infrastructure.Auth/       # present if --useAuth
+  fcs.Donations.Infrastructure.SqlServer/  # present if --useSqlServer
+  fcs.Donations.Infrastructure.PostgreSql/ # present if --usePostgreSql
+  fcs.Donations.Infrastructure.MongoDb/    # present if --useMongoDB
+  fcs.Donations.Infrastructure.Kafka/      # present if --useKafka
+  fcs.Donations.WebApi/
 tests/
-  Fcg.Donations.CommomTestsUtilities/
-  Fcg.Donations.UnitTests/
-  Fcg.Donations.IntegratedTests/
-  Fcg.Donations.FunctionalTests/
+  fcs.Donations.CommomTestsUtilities/
+  fcs.Donations.UnitTests/
+  fcs.Donations.IntegratedTests/
+  fcs.Donations.FunctionalTests/
 ```

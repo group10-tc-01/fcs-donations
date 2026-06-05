@@ -43,7 +43,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: src/Fcg.Donations.WebApi/Dockerfile
+      dockerfile: src/fcs.Donations.WebApi/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
     depends_on:

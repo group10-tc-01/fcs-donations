@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "fcs.Donations.WebApi": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:59767;http://localhost:59768"
+    }
+  }
+}
