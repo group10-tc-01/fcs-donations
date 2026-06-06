@@ -3,6 +3,7 @@ using Fcs.Donations.Domain.Donations;
 using Fcs.Donations.Domain.Items;
 using Fcs.Donations.Domain.OutboxMessages;
 using Fcs.Donations.Domain.ProcessedMessages;
+using Fcs.Donations.Application.UseCases.Donations.GetDonations;
 using Fcs.Donations.Infrastructure.SqlServer.Persistence;
 using Fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ public static class DependencyInjection
 
         services.AddScoped<IItemRepository, ItemRepository>();
         services.AddScoped<IDonationRepository, DonationRepository>();
+        services.AddScoped<IDonationQueryService, DonationQueryService>();
         services.AddScoped<IOutboxMessageRepository, OutboxMessageRepository>();
         services.AddScoped<IProcessedMessageRepository, ProcessedMessageRepository>();
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CleanApiDbContext>());

@@ -1,5 +1,6 @@
 using Fcs.Donations.Application.Abstractions.Authentication;
 using Fcs.Donations.Application.Abstractions.ExternalServices;
+using Fcs.Donations.Application.UseCases.Donations.GetDonations;
 using Fcs.Donations.CommomTestsUtilities.TestDoubles;
 using Fcs.Donations.Domain.Abstractions;
 using Fcs.Donations.Domain.Donations;
@@ -27,12 +28,14 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
         builder.ConfigureServices(services =>
         {
             services.RemoveAll<IDonationRepository>();
+            services.RemoveAll<IDonationQueryService>();
             services.RemoveAll<IOutboxMessageRepository>();
             services.RemoveAll<IUnitOfWork>();
             services.RemoveAll<ICampaignEligibilityClient>();
             services.RemoveAll<ILoggedUserService>();
 
             services.AddSingleton<IDonationRepository>(DonationRepository);
+            services.AddSingleton<IDonationQueryService>(new InMemoryDonationQueryService(DonationRepository));
             services.AddSingleton<IOutboxMessageRepository>(OutboxRepository);
             services.AddSingleton<IUnitOfWork>(UnitOfWork);
             services.AddSingleton<ICampaignEligibilityClient>(CampaignClient);

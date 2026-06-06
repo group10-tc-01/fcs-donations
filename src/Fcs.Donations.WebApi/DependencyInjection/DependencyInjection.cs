@@ -1,8 +1,9 @@
 using Asp.Versioning;
-using Fcs.Donations.WebApi.Middlewares;
+using Fcs.Donations.WebApi.Extensions;
 using Fcs.Donations.WebApi.Observability;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.OData;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -19,6 +20,7 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
         services.AddAuthorization();
         services.AddControllers()
+            .AddOData(options => options.Select().Filter().OrderBy().Count().SetMaxTop(100))
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
         services.AddApiVersioning(options =>
@@ -79,7 +81,8 @@ public static class DependencyInjection
 
     public static WebApplication UseWebApiPipeline(this WebApplication app)
     {
-        app.UseMiddleware<GlobalExceptionMiddleware>();
+        app.UseGlobalCorrelationId();
+        app.UseCustomerExceptionHandler();
         app.UseSwagger();
         app.UseSwaggerUI();
         app.UseAuthentication();
@@ -116,7 +119,7 @@ public static class DependencyInjection
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Information()
             .Enrich.FromLogContext()
-            .WriteTo.Console()
+            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{CorrelationId}] {Message:lj}{NewLine}{Exception}")
             .CreateLogger();
 
         services.AddLogging(builder =>
