@@ -38,7 +38,7 @@ public sealed class CreateDonationUseCase : ICreateDonationUseCase
 
         if (donorId is null)
         {
-            return Error.Failure("Donation.Unauthenticated", "User must be authenticated.");
+            return Error.Failure("Donation.Unauthenticated", ResourceMessages.DonationUnauthenticated);
         }
 
         var eligibility = await _campaignClient.CheckEligibilityAsync(request.CampaignId, cancellationToken);

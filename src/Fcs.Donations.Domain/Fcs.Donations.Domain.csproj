@@ -1,2 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Fcs.Donations.Messages\Fcs.Donations.Messages.csproj" />
+  </ItemGroup>
 </Project>

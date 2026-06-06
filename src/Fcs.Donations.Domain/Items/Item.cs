@@ -1,3 +1,5 @@
+using Fcs.Donations.Messages;
+
 namespace Fcs.Donations.Domain.Items;
 
 public sealed class Item
@@ -25,12 +27,12 @@ public sealed class Item
 
         if (string.IsNullOrWhiteSpace(normalizedName))
         {
-            return Error.Validation("Item.NameRequired", "Item name is required.");
+            return Error.Validation("Item.NameRequired", ResourceMessages.ItemNameIsRequired);
         }
 
         if (price <= 0)
         {
-            return Error.Validation("Item.InvalidPrice", "Item price must be greater than zero.");
+            return Error.Validation("Item.InvalidPrice", ResourceMessages.ItemPriceIsRequired);
         }
 
         return new Item(Guid.NewGuid(), normalizedName, price, DateTime.UtcNow);

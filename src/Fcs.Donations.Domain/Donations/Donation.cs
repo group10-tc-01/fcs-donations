@@ -1,3 +1,5 @@
+using Fcs.Donations.Messages;
+
 namespace Fcs.Donations.Domain.Donations;
 
 public sealed class Donation
@@ -29,7 +31,12 @@ public sealed class Donation
     {
         if (amount <= 0)
         {
-            return Error.Validation("Donation.InvalidAmount", "Donation amount must be greater than zero.");
+            return Error.Validation("Donation.InvalidAmount", ResourceMessages.DonationAmountInvalid);
+        }
+
+        if (campaignId == Guid.Empty)
+        {
+            return Error.Validation("Donation.InvalidCampaignId", ResourceMessages.CampaignNotEligible);
         }
 
         return new Donation(Guid.NewGuid(), campaignId, donorId, amount);
