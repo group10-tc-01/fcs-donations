@@ -31,12 +31,12 @@ public sealed class Donation
     {
         if (amount <= 0)
         {
-            return Error.Validation("Donation.InvalidAmount", ResourceMessages.DonationAmountInvalid);
+            return Error.Validation(ResourceMessages.DonationInvalidAmountCode, ResourceMessages.DonationAmountInvalid);
         }
 
         if (campaignId == Guid.Empty)
         {
-            return Error.Validation("Donation.InvalidCampaignId", ResourceMessages.CampaignNotEligible);
+            return Error.Validation(ResourceMessages.DonationInvalidCampaignIdCode, ResourceMessages.CampaignNotEligible);
         }
 
         return new Donation(Guid.NewGuid(), campaignId, donorId, amount);

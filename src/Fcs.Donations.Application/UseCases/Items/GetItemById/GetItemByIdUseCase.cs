@@ -20,7 +20,7 @@ public sealed class GetItemByIdUseCase : IGetItemByIdUseCase
 
         if (item is null)
         {
-            return Error.NotFound("Item.NotFound", ResourceMessages.ItemNotFound);
+            return Error.NotFound(ResourceMessages.ItemNotFoundCode, ResourceMessages.ItemNotFound);
         }
 
         return new GetItemByIdResponse(item.Id, item.Name, item.Price, item.CreatedAt);

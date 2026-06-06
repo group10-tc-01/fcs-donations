@@ -27,12 +27,12 @@ public sealed class Item
 
         if (string.IsNullOrWhiteSpace(normalizedName))
         {
-            return Error.Validation("Item.NameRequired", ResourceMessages.ItemNameIsRequired);
+            return Error.Validation(ResourceMessages.ItemNameRequiredCode, ResourceMessages.ItemNameIsRequired);
         }
 
         if (price <= 0)
         {
-            return Error.Validation("Item.InvalidPrice", ResourceMessages.ItemPriceIsRequired);
+            return Error.Validation(ResourceMessages.ItemInvalidPriceCode, ResourceMessages.ItemPriceIsRequired);
         }
 
         return new Item(Guid.NewGuid(), normalizedName, price, DateTime.UtcNow);

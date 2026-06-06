@@ -23,7 +23,7 @@ public sealed class CreateItemUseCase : ICreateItemUseCase
     {
         if (await _itemRepository.ExistsByNameAsync(request.Name, cancellationToken))
         {
-            return Error.Conflict("Item.AlreadyExists", ResourceMessages.ItemAlreadyExists);
+            return Error.Conflict(ResourceMessages.ItemAlreadyExistsCode, ResourceMessages.ItemAlreadyExists);
         }
 
         var itemResult = Item.Create(request.Name, request.Price);
