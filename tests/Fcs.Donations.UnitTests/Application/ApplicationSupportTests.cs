@@ -3,7 +3,6 @@ using Fcs.Donations.Application.DependencyInjection;
 using Fcs.Donations.Application.Messaging;
 using Fcs.Donations.Application.Settings;
 using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
-
 using Fcs.Donations.Application.UseCases.Donations.GetDonations;
 using Fcs.Donations.Domain.Donations;
 
@@ -97,8 +96,7 @@ public sealed class ApplicationSupportTests
 
         provider.GetRequiredService<IMessagePublisher>().Should().BeOfType<NullMessagePublisher>();
         provider.GetServices<IValidator<CreateDonationRequest>>().Should().NotBeEmpty();
-
-
+          
         services.Should().Contain(descriptor =>
             descriptor.ServiceType == typeof(IMessagePublisher) &&
             descriptor.ImplementationType == typeof(NullMessagePublisher));
