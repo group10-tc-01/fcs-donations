@@ -5,6 +5,11 @@ using Fcs.Donations.Application.Settings;
 using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
 using Fcs.Donations.Application.UseCases.Donations.GetDonations;
 using Fcs.Donations.Domain.Donations;
+
+
+using Fcs.Donations.Application.UseCases.Donations.GetDonations;
+using Fcs.Donations.Domain.Donations;
+
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -84,14 +89,21 @@ public sealed class ApplicationSupportTests
     }
 
     [Fact]
+
     public void Given_ServiceCollection_When_AddApplication_Then_ShouldRegisterApplicationServices()
     {
         var services = new ServiceCollection();
 
         services.AddApplication();
+
         using var provider = services.BuildServiceProvider();
 
         provider.GetRequiredService<IMessagePublisher>().Should().BeOfType<NullMessagePublisher>();
-        provider.GetServices<IValidator<CreateDonationRequest>>().Should().NotBeEmpty();
+        provider.GetServices<IValidator<CreateDonationRequest>>().Should().NotBeEmpty()
+          
+        services.Should().Contain(descriptor =>
+            descriptor.ServiceType == typeof(IMessagePublisher) &&
+            descriptor.ImplementationType == typeof(NullMessagePublisher));
+        services.Should().Contain(descriptor => descriptor.ServiceType == typeof(IValidator<CreateDonationRequest>));
     }
 }
