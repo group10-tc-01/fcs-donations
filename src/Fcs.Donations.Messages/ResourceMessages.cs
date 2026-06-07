@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Fcs.Donations.Messages;
 
+[ExcludeFromCodeCoverage]
 public static class ResourceMessages
 {
     public const string DonationInvalidAmountCode = "Donation.InvalidAmount";

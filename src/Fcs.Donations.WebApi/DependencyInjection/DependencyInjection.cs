@@ -9,12 +9,14 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace Fcs.Donations.WebApi.DependencyInjection;
 
 public static class DependencyInjection
 {
+    [ExcludeFromCodeCoverage]
     public static IServiceCollection AddWebApi(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpContextAccessor();
@@ -79,6 +81,7 @@ public static class DependencyInjection
         return services;
     }
 
+    [ExcludeFromCodeCoverage]
     public static WebApplication UseWebApiPipeline(this WebApplication app)
     {
         app.UseGlobalCorrelationId();

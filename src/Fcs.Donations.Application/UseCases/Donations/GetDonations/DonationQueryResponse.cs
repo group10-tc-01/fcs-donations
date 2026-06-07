@@ -1,7 +1,9 @@
 using Fcs.Donations.Domain.Donations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.Application.UseCases.Donations.GetDonations;
 
+[ExcludeFromCodeCoverage]
 public sealed record DonationQueryResponse
 {
     public Guid Id { get; init; }

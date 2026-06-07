@@ -1,9 +1,11 @@
 using Fcs.Donations.WebApi.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.Json;
 
 namespace Fcs.Donations.WebApi.Middlewares;
 
+[ExcludeFromCodeCoverage]
 public sealed class GlobalExceptionMiddleware
 {
     private const string CorrelationIdKey = "CorrelationId";
