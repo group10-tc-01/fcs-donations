@@ -2,10 +2,12 @@ using Fcs.Donations.Application.Abstractions.Messaging;
 using Fcs.Donations.Application.Messaging;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace Fcs.Donations.Application.DependencyInjection;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)

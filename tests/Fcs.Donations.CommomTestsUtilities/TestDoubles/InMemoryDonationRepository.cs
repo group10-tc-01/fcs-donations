@@ -1,10 +1,14 @@
 using Fcs.Donations.Domain.Donations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 
+[ExcludeFromCodeCoverage]
 public sealed class InMemoryDonationRepository : IDonationRepository
 {
     private readonly Dictionary<Guid, Donation> _donations = new();
+
+    public IQueryable<Donation> Query() => _donations.Values.AsQueryable();
 
     public Task AddAsync(Donation donation, CancellationToken cancellationToken = default)
     {
@@ -23,4 +27,6 @@ public sealed class InMemoryDonationRepository : IDonationRepository
         _donations[donation.Id] = donation;
         return Task.CompletedTask;
     }
+
+    public void Clear() => _donations.Clear();
 }

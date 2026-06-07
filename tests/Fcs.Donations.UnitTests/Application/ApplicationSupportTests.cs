@@ -3,6 +3,10 @@ using Fcs.Donations.Application.DependencyInjection;
 using Fcs.Donations.Application.Messaging;
 using Fcs.Donations.Application.Settings;
 using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
+
+using Fcs.Donations.Application.UseCases.Donations.GetDonations;
+using Fcs.Donations.Domain.Donations;
+
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,11 +55,49 @@ public sealed class ApplicationSupportTests
     }
 
     [Fact]
+    public void Given_DonationQueryResponse_When_Initialized_Then_ShouldKeepValues()
+    {
+        var id = Guid.NewGuid();
+        var campaignId = Guid.NewGuid();
+        var donorId = Guid.NewGuid();
+        var createdAt = DateTime.UtcNow;
+        var processedAt = createdAt.AddMinutes(1);
+
+        var response = new DonationQueryResponse
+        {
+            Id = id,
+            CampaignId = campaignId,
+            DonorId = donorId,
+            Amount = 100,
+            Status = DonationStatus.Processed,
+            CreatedAt = createdAt,
+            ProcessedAt = processedAt,
+            FailureReason = "none"
+        };
+
+        response.Id.Should().Be(id);
+        response.CampaignId.Should().Be(campaignId);
+        response.DonorId.Should().Be(donorId);
+        response.Amount.Should().Be(100);
+        response.Status.Should().Be(DonationStatus.Processed);
+        response.CreatedAt.Should().Be(createdAt);
+        response.ProcessedAt.Should().Be(processedAt);
+        response.FailureReason.Should().Be("none");
+    }
+
+    [Fact]
+
     public void Given_ServiceCollection_When_AddApplication_Then_ShouldRegisterApplicationServices()
     {
         var services = new ServiceCollection();
 
         services.AddApplication();
+
+        using var provider = services.BuildServiceProvider();
+
+        provider.GetRequiredService<IMessagePublisher>().Should().BeOfType<NullMessagePublisher>();
+        provider.GetServices<IValidator<CreateDonationRequest>>().Should().NotBeEmpty();
+
 
         services.Should().Contain(descriptor =>
             descriptor.ServiceType == typeof(IMessagePublisher) &&

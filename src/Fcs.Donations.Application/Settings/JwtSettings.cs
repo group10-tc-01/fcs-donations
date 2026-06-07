@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Fcs.Donations.Application.Settings;
 
+[ExcludeFromCodeCoverage]
 public sealed class JwtSettings
 {
     public const string SectionName = "JwtSettings";
