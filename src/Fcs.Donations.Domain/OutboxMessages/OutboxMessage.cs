@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Fcs.Donations.Domain.OutboxMessages;
 
+[ExcludeFromCodeCoverage]
 public sealed class OutboxMessage
 {
     private OutboxMessage()

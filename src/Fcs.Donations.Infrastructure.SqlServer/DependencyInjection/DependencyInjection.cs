@@ -1,6 +1,5 @@
 using Fcs.Donations.Domain.Abstractions;
 using Fcs.Donations.Domain.Donations;
-using Fcs.Donations.Domain.Items;
 using Fcs.Donations.Domain.OutboxMessages;
 using Fcs.Donations.Domain.ProcessedMessages;
 using Fcs.Donations.Application.UseCases.Donations.GetDonations;
@@ -19,7 +18,6 @@ public static class DependencyInjection
         services.AddDbContext<CleanApiDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
 
-        services.AddScoped<IItemRepository, ItemRepository>();
         services.AddScoped<IDonationRepository, DonationRepository>();
         services.AddScoped<IDonationQueryService, DonationQueryService>();
         services.AddScoped<IOutboxMessageRepository, OutboxMessageRepository>();

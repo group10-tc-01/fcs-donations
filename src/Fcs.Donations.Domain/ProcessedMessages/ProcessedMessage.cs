@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Fcs.Donations.Domain.ProcessedMessages;
 
+[ExcludeFromCodeCoverage]
 public sealed class ProcessedMessage
 {
     private ProcessedMessage()
