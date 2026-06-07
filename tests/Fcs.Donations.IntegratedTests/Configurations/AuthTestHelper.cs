@@ -7,9 +7,11 @@ namespace Fcs.Donations.IntegratedTests.Configurations;
 
 public static class AuthTestHelper
 {
+    public static string SecretKey { get; } = new('t', 40);
+
     public static string GenerateToken()
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super-secret-key-used-for-template-only-1234567890"));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
