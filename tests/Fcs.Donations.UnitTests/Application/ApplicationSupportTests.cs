@@ -6,10 +6,6 @@ using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
 using Fcs.Donations.Application.UseCases.Donations.GetDonations;
 using Fcs.Donations.Domain.Donations;
 
-
-using Fcs.Donations.Application.UseCases.Donations.GetDonations;
-using Fcs.Donations.Domain.Donations;
-
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -99,7 +95,7 @@ public sealed class ApplicationSupportTests
         using var provider = services.BuildServiceProvider();
 
         provider.GetRequiredService<IMessagePublisher>().Should().BeOfType<NullMessagePublisher>();
-        provider.GetServices<IValidator<CreateDonationRequest>>().Should().NotBeEmpty()
+        provider.GetServices<IValidator<CreateDonationRequest>>().Should().NotBeEmpty();
           
         services.Should().Contain(descriptor =>
             descriptor.ServiceType == typeof(IMessagePublisher) &&
