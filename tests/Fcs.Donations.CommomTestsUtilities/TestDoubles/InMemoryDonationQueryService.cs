@@ -1,7 +1,9 @@
 using Fcs.Donations.Application.UseCases.Donations.GetDonations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 
+[ExcludeFromCodeCoverage]
 public sealed class InMemoryDonationQueryService : IDonationQueryService
 {
     private readonly InMemoryDonationRepository _repository;

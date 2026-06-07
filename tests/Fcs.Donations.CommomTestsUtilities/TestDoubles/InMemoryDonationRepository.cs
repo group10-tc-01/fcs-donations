@@ -1,7 +1,9 @@
 using Fcs.Donations.Domain.Donations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 
+[ExcludeFromCodeCoverage]
 public sealed class InMemoryDonationRepository : IDonationRepository
 {
     private readonly Dictionary<Guid, Donation> _donations = new();

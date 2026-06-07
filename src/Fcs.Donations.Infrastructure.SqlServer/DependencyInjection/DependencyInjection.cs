@@ -8,9 +8,11 @@ using Fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.Infrastructure.SqlServer.DependencyInjection;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInjection
 {
     public static IServiceCollection AddSqlServerInfrastructure(this IServiceCollection services, IConfiguration configuration)

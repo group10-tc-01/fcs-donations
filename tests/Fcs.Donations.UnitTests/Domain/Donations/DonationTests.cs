@@ -16,6 +16,15 @@ public sealed class DonationTests
     }
 
     [Fact]
+    public void Given_InvalidCampaignId_When_Create_Then_ShouldReturnValidationError()
+    {
+        var result = Donation.Create(Guid.Empty, Guid.NewGuid(), 10);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Type.Should().Be(ErrorType.Validation);
+    }
+
+    [Fact]
     public void Given_ValidData_When_Create_Then_ShouldReturnSuccess()
     {
         var campaignId = Guid.NewGuid();

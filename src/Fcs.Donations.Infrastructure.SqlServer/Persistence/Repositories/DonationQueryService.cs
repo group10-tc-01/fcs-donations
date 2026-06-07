@@ -1,8 +1,10 @@
 using Fcs.Donations.Application.UseCases.Donations.GetDonations;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
 
+[ExcludeFromCodeCoverage]
 public sealed class DonationQueryService : IDonationQueryService
 {
     private readonly CleanApiDbContext _dbContext;
