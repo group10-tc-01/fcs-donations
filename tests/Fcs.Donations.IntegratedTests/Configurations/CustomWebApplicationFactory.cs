@@ -20,6 +20,13 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
     public FakeCampaignEligibilityClient CampaignClient { get; } = new();
     public FakeLoggedUserService LoggedUser { get; } = new();
 
+    public CustomWebApplicationFactory()
+    {
+        Environment.SetEnvironmentVariable("JwtSettings__SecretKey", AuthTestHelper.SecretKey);
+        Environment.SetEnvironmentVariable("JwtSettings__Issuer", "Fcs.Donations");
+        Environment.SetEnvironmentVariable("JwtSettings__Audience", "Fcs.Donations.Client");
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Test");

@@ -1,6 +1,5 @@
 using Fcs.Donations.Domain.Abstractions;
 using Fcs.Donations.Domain.Donations;
-using Fcs.Donations.Domain.Items;
 using Fcs.Donations.Domain.OutboxMessages;
 using Fcs.Donations.Domain.ProcessedMessages;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +12,6 @@ public sealed class CleanApiDbContext : DbContext, IUnitOfWork
     {
     }
 
-    public DbSet<Item> Items => Set<Item>();
     public DbSet<Donation> Donations => Set<Donation>();
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
     public DbSet<ProcessedMessage> ProcessedMessages => Set<ProcessedMessage>();

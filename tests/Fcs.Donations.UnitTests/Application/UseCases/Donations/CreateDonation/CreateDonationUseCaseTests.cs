@@ -43,4 +43,40 @@ public sealed class CreateDonationUseCaseTests
         result.IsFailure.Should().BeTrue();
         result.Error.Type.Should().Be(ErrorType.Conflict);
     }
+
+    [Fact]
+    public async Task Given_MissingLoggedUser_When_Handle_Then_ShouldReturnFailureError()
+    {
+        var donationRepo = new InMemoryDonationRepository();
+        var outboxRepo = new InMemoryOutboxMessageRepository();
+        var unitOfWork = new FakeUnitOfWork();
+        var campaignClient = new FakeCampaignEligibilityClient();
+        var loggedUser = new FakeLoggedUserService { UserId = null };
+        var request = new CreateDonationRequestBuilder().Build();
+        var sut = new CreateDonationUseCase(donationRepo, outboxRepo, unitOfWork, campaignClient, loggedUser);
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Type.Should().Be(ErrorType.Failure);
+        unitOfWork.SaveChangesCalls.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task Given_InvalidAmount_When_Handle_Then_ShouldReturnValidationError()
+    {
+        var donationRepo = new InMemoryDonationRepository();
+        var outboxRepo = new InMemoryOutboxMessageRepository();
+        var unitOfWork = new FakeUnitOfWork();
+        var campaignClient = new FakeCampaignEligibilityClient();
+        var loggedUser = new FakeLoggedUserService();
+        var request = new CreateDonationRequest(Guid.NewGuid(), 0);
+        var sut = new CreateDonationUseCase(donationRepo, outboxRepo, unitOfWork, campaignClient, loggedUser);
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Type.Should().Be(ErrorType.Validation);
+        unitOfWork.SaveChangesCalls.Should().Be(0);
+    }
 }

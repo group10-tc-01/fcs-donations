@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Fcs.Donations.WebApi.Middlewares;
 using Fcs.Donations.WebApi.Observability;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
@@ -16,6 +17,7 @@ public static class DependencyInjection
     public static IServiceCollection AddWebApi(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpContextAccessor();
+        services.AddAuthorization();
         services.AddControllers()
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
@@ -38,6 +40,31 @@ public static class DependencyInjection
             {
                 Title = "Fcs.Donations API",
                 Version = "v1"
+            });
+
+            options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Description = "Informe o token JWT no formato: Bearer {token}",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = JwtBearerDefaults.AuthenticationScheme,
+                BearerFormat = "JWT"
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = JwtBearerDefaults.AuthenticationScheme
+                        }
+                    },
+                    Array.Empty<string>()
+                }
             });
         });
 
