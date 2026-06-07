@@ -3,7 +3,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Your_password123"
+      SA_PASSWORD: "${SQLSERVER_PASSWORD}"
       MSSQL_PID: "Developer"
     ports:
       - "5433:1433"
@@ -46,6 +46,8 @@ services:
       dockerfile: src/Fcs.Donations.WebApi/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
+      ConnectionStrings__SqlServer: "Server=sqlserver,1433;Database=fcs_donations;User Id=sa;Password=${SQLSERVER_PASSWORD};TrustServerCertificate=True;"
+      JwtSettings__SecretKey: "${JWT_SECRET_KEY}"
     depends_on:
       - sqlserver
       - mongodb

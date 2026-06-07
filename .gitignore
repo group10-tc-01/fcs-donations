@@ -5,6 +5,9 @@ TestResults/
 artifacts/
 .idea/
 .vscode/
+.env
+.env.*
+!.env.example
 *.user
 *.suo
 *.db
