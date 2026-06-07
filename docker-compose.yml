@@ -46,6 +46,9 @@ services:
       dockerfile: src/Fcs.Donations.WebApi/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
+      Observability__EnableOtlpExporter: "true"
+      Observability__OtlpEndpoint: "http://otel-collector:4318"
+      Observability__OtlpAuthHeader: ""
     depends_on:
       - sqlserver
       - mongodb
@@ -53,3 +56,11 @@ services:
       - seq
     ports:
       - "8080:8080"
+    networks:
+      - default
+      - observability
+
+networks:
+  observability:
+    name: fcs-observability
+    external: true

@@ -3,10 +3,12 @@ using Fcs.Donations.WebApi.Middlewares;
 using Fcs.Donations.WebApi.Observability;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
+using Serilog.Sinks.OpenTelemetry;
 using System.Text.Json.Serialization;
 
 namespace Fcs.Donations.WebApi.DependencyInjection;
@@ -45,7 +47,7 @@ public static class DependencyInjection
         services.AddRouting(options => options.LowercaseUrls = true);
 
         services.AddObservability(configuration);
-        services.AddSerilogLogging();
+        services.AddSerilogLogging(configuration);
 
         return services;
     }
@@ -59,6 +61,7 @@ public static class DependencyInjection
         app.UseAuthorization();
         app.MapControllers();
         app.MapHealthChecks("/health", new HealthCheckOptions());
+        app.MapPrometheusScrapingEndpoint("/metrics");
         return app;
     }
 
@@ -67,30 +70,104 @@ public static class DependencyInjection
         var options = new ObservabilityOptions();
         configuration.GetSection(ObservabilityOptions.SectionName).Bind(options);
 
+        var environment = configuration["ASPNETCORE_ENVIRONMENT"] ?? "Production";
+        var resourceBuilder = ResourceBuilder.CreateDefault()
+            .AddService(options.ServiceName, serviceNamespace: "FCS")
+            .AddAttributes(new Dictionary<string, object>
+            {
+                ["deployment.environment"] = environment
+            });
+
         services.AddOpenTelemetry()
-            .ConfigureResource(resource => resource.AddService(options.ServiceName))
+            .ConfigureResource(resource => resource.AddService(options.ServiceName, serviceNamespace: "FCS"))
             .WithTracing(builder =>
             {
-                builder.AddAspNetCoreInstrumentation();
-                builder.AddHttpClientInstrumentation();
+                builder
+                    .SetResourceBuilder(resourceBuilder)
+                    .AddAspNetCoreInstrumentation(opts =>
+                    {
+                        opts.Filter = httpContext =>
+                            !httpContext.Request.Path.StartsWithSegments("/health") &&
+                            !httpContext.Request.Path.StartsWithSegments("/metrics");
+                    })
+                    .AddHttpClientInstrumentation()
+                    .AddSqlClientInstrumentation();
+
+                if (options.EnableOtlpExporter && !string.IsNullOrWhiteSpace(options.OtlpEndpoint))
+                {
+                    builder.AddOtlpExporter(exporterOptions =>
+                    {
+                        exporterOptions.Endpoint = new Uri($"{options.OtlpEndpoint}/v1/traces");
+                        exporterOptions.Protocol = OtlpExportProtocol.HttpProtobuf;
+                        if (!string.IsNullOrWhiteSpace(options.OtlpAuthHeader))
+                        {
+                            exporterOptions.Headers = $"Authorization={options.OtlpAuthHeader}";
+                        }
+                    });
+                }
             })
             .WithMetrics(builder =>
             {
-                builder.AddAspNetCoreInstrumentation();
-                builder.AddHttpClientInstrumentation();
-                builder.AddRuntimeInstrumentation();
+                builder
+                    .SetResourceBuilder(resourceBuilder)
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddRuntimeInstrumentation()
+                    .AddPrometheusExporter();
+
+                if (options.EnableOtlpExporter && !string.IsNullOrWhiteSpace(options.OtlpEndpoint))
+                {
+                    builder.AddOtlpExporter(exporterOptions =>
+                    {
+                        exporterOptions.Endpoint = new Uri($"{options.OtlpEndpoint}/v1/metrics");
+                        exporterOptions.Protocol = OtlpExportProtocol.HttpProtobuf;
+                        if (!string.IsNullOrWhiteSpace(options.OtlpAuthHeader))
+                        {
+                            exporterOptions.Headers = $"Authorization={options.OtlpAuthHeader}";
+                        }
+                    });
+                }
             });
 
         return services;
     }
 
-    private static IServiceCollection AddSerilogLogging(this IServiceCollection services)
+    private static IServiceCollection AddSerilogLogging(this IServiceCollection services, IConfiguration configuration)
     {
-        Log.Logger = new LoggerConfiguration()
+        var options = new ObservabilityOptions();
+        configuration.GetSection(ObservabilityOptions.SectionName).Bind(options);
+        var environment = configuration["ASPNETCORE_ENVIRONMENT"] ?? "Production";
+
+        var loggerConfiguration = new LoggerConfiguration()
             .MinimumLevel.Information()
             .Enrich.FromLogContext()
-            .WriteTo.Console()
-            .CreateLogger();
+            .Enrich.WithProperty("Application", options.ServiceName)
+            .Enrich.WithProperty("Environment", environment)
+            .WriteTo.Console();
+
+        if (options.EnableOtlpExporter && !string.IsNullOrWhiteSpace(options.OtlpEndpoint))
+        {
+            loggerConfiguration.WriteTo.OpenTelemetry(otlpOptions =>
+            {
+                otlpOptions.Endpoint = $"{options.OtlpEndpoint}/v1/logs";
+                otlpOptions.Protocol = OtlpProtocol.HttpProtobuf;
+                if (!string.IsNullOrWhiteSpace(options.OtlpAuthHeader))
+                {
+                    otlpOptions.Headers = new Dictionary<string, string>
+                    {
+                        ["Authorization"] = options.OtlpAuthHeader
+                    };
+                }
+                otlpOptions.ResourceAttributes = new Dictionary<string, object>
+                {
+                    ["service.name"] = options.ServiceName,
+                    ["service.namespace"] = "FCS",
+                    ["deployment.environment"] = environment
+                };
+            });
+        }
+
+        Log.Logger = loggerConfiguration.CreateLogger();
 
         services.AddLogging(builder =>
         {
