@@ -1,7 +1,9 @@
 using Fcs.Donations.Domain.Abstractions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 
+[ExcludeFromCodeCoverage]
 public sealed class FakeUnitOfWork : IUnitOfWork
 {
     public int SaveChangesCalls { get; private set; }
