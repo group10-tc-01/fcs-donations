@@ -6,9 +6,11 @@ using Fcs.Donations.Infrastructure.SqlServer.DependencyInjection;
 using Fcs.Donations.Infrastructure.SqlServer.Persistence;
 using Fcs.Donations.WebApi.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.WebApi;
 
+[ExcludeFromCodeCoverage]
 public class Program
 {
     public static void Main(string[] args)
