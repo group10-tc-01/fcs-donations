@@ -3,9 +3,11 @@ using Fcs.Donations.Domain.Donations;
 using Fcs.Donations.Domain.OutboxMessages;
 using Fcs.Donations.Domain.ProcessedMessages;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.Infrastructure.SqlServer.Persistence;
 
+[ExcludeFromCodeCoverage]
 public sealed class FcsDonationsDbContext : DbContext, IUnitOfWork
 {
     public FcsDonationsDbContext(DbContextOptions<FcsDonationsDbContext> options) : base(options)
