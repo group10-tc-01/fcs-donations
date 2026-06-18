@@ -5,9 +5,9 @@ namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
 
 public sealed class DonationRepository : IDonationRepository
 {
-    private readonly CleanApiDbContext _dbContext;
+    private readonly FcsDonationsDbContext _dbContext;
 
-    public DonationRepository(CleanApiDbContext dbContext)
+    public DonationRepository(FcsDonationsDbContext dbContext)
     {
         _dbContext = dbContext;
     }

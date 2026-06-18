@@ -5,9 +5,9 @@ namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
 
 public sealed class ProcessedMessageRepository : IProcessedMessageRepository
 {
-    private readonly CleanApiDbContext _dbContext;
+    private readonly FcsDonationsDbContext _dbContext;
 
-    public ProcessedMessageRepository(CleanApiDbContext dbContext)
+    public ProcessedMessageRepository(FcsDonationsDbContext dbContext)
     {
         _dbContext = dbContext;
     }

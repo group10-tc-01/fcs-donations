@@ -5,9 +5,9 @@ namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
 
 public sealed class OutboxMessageRepository : IOutboxMessageRepository
 {
-    private readonly CleanApiDbContext _dbContext;
+    private readonly FcsDonationsDbContext _dbContext;
 
-    public OutboxMessageRepository(CleanApiDbContext dbContext)
+    public OutboxMessageRepository(FcsDonationsDbContext dbContext)
     {
         _dbContext = dbContext;
     }

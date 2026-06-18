@@ -17,15 +17,15 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddSqlServerInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<CleanApiDbContext>(options =>
+        services.AddDbContext<FcsDonationsDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
 
         services.AddScoped<IDonationRepository, DonationRepository>();
         services.AddScoped<IDonationQueryService, DonationQueryService>();
         services.AddScoped<IOutboxMessageRepository, OutboxMessageRepository>();
         services.AddScoped<IProcessedMessageRepository, ProcessedMessageRepository>();
-        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CleanApiDbContext>());
-        services.AddHealthChecks().AddDbContextCheck<CleanApiDbContext>("sqlserver");
+        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<FcsDonationsDbContext>());
+        services.AddHealthChecks().AddDbContextCheck<FcsDonationsDbContext>("sqlserver");
 
         return services;
     }

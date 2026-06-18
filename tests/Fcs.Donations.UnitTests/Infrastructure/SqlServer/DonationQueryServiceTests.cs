@@ -11,7 +11,7 @@ public sealed class DonationQueryServiceTests
     [Fact]
     public async Task Given_DonationsFromMultipleDonors_When_QueryByDonor_Then_ShouldReturnProjectedDonationsFromRequestedDonor()
     {
-        var options = new DbContextOptionsBuilder<CleanApiDbContext>()
+        var options = new DbContextOptionsBuilder<FcsDonationsDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
@@ -19,7 +19,7 @@ public sealed class DonationQueryServiceTests
         var expectedDonation = Donation.Create(Guid.NewGuid(), donorId, 125).Value;
         var otherDonation = Donation.Create(Guid.NewGuid(), Guid.NewGuid(), 300).Value;
 
-        await using var dbContext = new CleanApiDbContext(options);
+        await using var dbContext = new FcsDonationsDbContext(options);
         await dbContext.Donations.AddRangeAsync(expectedDonation, otherDonation);
         await dbContext.SaveChangesAsync();
 
