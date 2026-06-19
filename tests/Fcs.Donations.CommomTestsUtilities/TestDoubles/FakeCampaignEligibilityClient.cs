@@ -1,7 +1,9 @@
 using Fcs.Donations.Application.Abstractions.ExternalServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 
+[ExcludeFromCodeCoverage]
 public sealed class FakeCampaignEligibilityClient : ICampaignEligibilityClient
 {
     public bool IsEligible { get; set; } = true;

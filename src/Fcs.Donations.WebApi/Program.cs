@@ -3,10 +3,14 @@ using Fcs.Donations.Infrastructure.Auth.DependencyInjection;
 using Fcs.Donations.Infrastructure.Http.DependencyInjection;
 using Fcs.Donations.Infrastructure.Kafka.DependencyInjection;
 using Fcs.Donations.Infrastructure.SqlServer.DependencyInjection;
+using Fcs.Donations.Infrastructure.SqlServer.Persistence;
 using Fcs.Donations.WebApi.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.WebApi;
 
+[ExcludeFromCodeCoverage]
 public class Program
 {
     public static void Main(string[] args)
@@ -21,6 +25,16 @@ public class Program
         builder.Services.AddAuthInfrastructure(builder.Configuration);
 
         var app = builder.Build();
+
+        if (!app.Environment.IsEnvironment("Test"))
+        {
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<FcsDonationsDbContext>();
+                context.Database.Migrate();
+            }
+        }
+
         app.UseWebApiPipeline();
         app.Run();
     }

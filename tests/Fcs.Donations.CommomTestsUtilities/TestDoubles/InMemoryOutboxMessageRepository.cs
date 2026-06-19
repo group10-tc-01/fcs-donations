@@ -1,7 +1,9 @@
 using Fcs.Donations.Domain.OutboxMessages;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 
+[ExcludeFromCodeCoverage]
 public sealed class InMemoryOutboxMessageRepository : IOutboxMessageRepository
 {
     private readonly List<OutboxMessage> _messages = new();

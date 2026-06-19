@@ -3,12 +3,14 @@ using Fcs.Donations.Domain.Donations;
 using Fcs.Donations.Domain.OutboxMessages;
 using Fcs.Donations.Domain.ProcessedMessages;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.Infrastructure.SqlServer.Persistence;
 
-public sealed class CleanApiDbContext : DbContext, IUnitOfWork
+[ExcludeFromCodeCoverage]
+public sealed class FcsDonationsDbContext : DbContext, IUnitOfWork
 {
-    public CleanApiDbContext(DbContextOptions<CleanApiDbContext> options) : base(options)
+    public FcsDonationsDbContext(DbContextOptions<FcsDonationsDbContext> options) : base(options)
     {
     }
 
@@ -23,6 +25,6 @@ public sealed class CleanApiDbContext : DbContext, IUnitOfWork
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(CleanApiDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(FcsDonationsDbContext).Assembly);
     }
 }

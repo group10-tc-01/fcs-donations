@@ -1,8 +1,10 @@
 using Bogus;
 using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.CommomTestsUtilities.Builders.Donations;
 
+[ExcludeFromCodeCoverage]
 public sealed class CreateDonationRequestBuilder
 {
     private readonly Faker<CreateDonationRequest> _faker = new Faker<CreateDonationRequest>()
