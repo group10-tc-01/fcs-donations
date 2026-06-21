@@ -28,11 +28,9 @@ public class Program
 
         if (!app.Environment.IsEnvironment("Test"))
         {
-            using (var scope = app.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<FcsDonationsDbContext>();
-                context.Database.Migrate();
-            }
+            using var scope = app.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<FcsDonationsDbContext>();
+            context.Database.Migrate();
         }
 
         app.UseWebApiPipeline();

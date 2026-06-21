@@ -22,7 +22,6 @@
     <Project Path="src/Fcs.Donations.Infrastructure.Auth/Fcs.Donations.Infrastructure.Auth.csproj" />
     <Project Path="src/Fcs.Donations.Infrastructure.Http/Fcs.Donations.Infrastructure.Http.csproj" />
     <Project Path="src/Fcs.Donations.Infrastructure.Kafka/Fcs.Donations.Infrastructure.Kafka.csproj" />
-    <Project Path="src/Fcs.Donations.Infrastructure.MongoDb/Fcs.Donations.Infrastructure.MongoDb.csproj" />
     <Project Path="src/Fcs.Donations.Infrastructure.SqlServer/Fcs.Donations.Infrastructure.SqlServer.csproj" />
   </Folder>
   <Folder Name="/src/3 - WebApi/">
