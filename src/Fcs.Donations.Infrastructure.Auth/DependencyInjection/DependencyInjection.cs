@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using System.Text.Json;
 using Fcs.Donations.Application.Abstractions.Authentication;
-using Fcs.Donations.Application.Settings;
 using Fcs.Donations.Infrastructure.Auth.Authentication;
 using Fcs.Identity.Infrastructure.Keycloak.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

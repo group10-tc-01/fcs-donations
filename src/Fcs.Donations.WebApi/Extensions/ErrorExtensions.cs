@@ -1,4 +1,4 @@
-using Fcs.Donations.Domain;
+using Fcs.Donations.Domain.Results;
 using Fcs.Donations.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 

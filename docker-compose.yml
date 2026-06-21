@@ -47,7 +47,6 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
       ConnectionStrings__SqlServer: "Server=sqlserver,1433;Database=fcs_donations;User Id=sa;Password=${SQLSERVER_PASSWORD};TrustServerCertificate=True;"
-      JwtSettings__SecretKey: "${JWT_SECRET_KEY}"
     depends_on:
       - sqlserver
       - mongodb

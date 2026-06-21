@@ -1,10 +1,10 @@
 using System.Text.Json;
 using Fcs.Donations.Application.Abstractions.Authentication;
 using Fcs.Donations.Application.Abstractions.ExternalServices;
-using Fcs.Donations.Domain;
 using Fcs.Donations.Domain.Abstractions;
 using Fcs.Donations.Domain.Donations;
 using Fcs.Donations.Domain.OutboxMessages;
+using Fcs.Donations.Domain.Results;
 using Fcs.Donations.Messages;
 
 namespace Fcs.Donations.Application.UseCases.Donations.CreateDonation;

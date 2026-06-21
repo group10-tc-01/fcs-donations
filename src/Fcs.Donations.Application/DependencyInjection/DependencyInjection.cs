@@ -1,7 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Fcs.Donations.Application.Abstractions.Messaging;
-using Fcs.Donations.Application.Messaging;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,8 +13,6 @@ public static class DependencyInjection
         var assembly = Assembly.GetExecutingAssembly();
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(assembly));
         services.AddValidatorsFromAssembly(assembly);
-        services.AddScoped<IMessagePublisher, NullMessagePublisher>();
-
         return services;
     }
 }

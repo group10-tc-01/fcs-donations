@@ -1,7 +1,7 @@
 using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
 using Fcs.Donations.CommomTestsUtilities.Builders.Donations;
 using Fcs.Donations.CommomTestsUtilities.TestDoubles;
-using Fcs.Donations.Domain;
+using Fcs.Donations.Domain.Results;
 using FluentAssertions;
 
 namespace Fcs.Donations.UnitTests.Application.UseCases.Donations.CreateDonation;
