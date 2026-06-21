@@ -11,7 +11,6 @@ COPY ["src/Fcs.Donations.Infrastructure.Kafka/Fcs.Donations.Infrastructure.Kafka
 COPY ["src/Fcs.Donations.Infrastructure.SqlServer/Fcs.Donations.Infrastructure.SqlServer.csproj", "src/Fcs.Donations.Infrastructure.SqlServer/"]
 COPY ["src/Fcs.Donations.Infrastructure.Http/Fcs.Donations.Infrastructure.Http.csproj", "src/Fcs.Donations.Infrastructure.Http/"]
 COPY ["src/Fcs.Donations.Infrastructure.Auth/Fcs.Donations.Infrastructure.Auth.csproj", "src/Fcs.Donations.Infrastructure.Auth/"]
-COPY ["src/Fcs.Donations.Infrastructure.MongoDb/Fcs.Donations.Infrastructure.MongoDb.csproj", "src/Fcs.Donations.Infrastructure.MongoDb/"]
 COPY ["src/Fcs.Donations.WebApi/Fcs.Donations.WebApi.csproj", "src/Fcs.Donations.WebApi/"]
 
 RUN dotnet restore "./src/Fcs.Donations.WebApi/Fcs.Donations.WebApi.csproj"

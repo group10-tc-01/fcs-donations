@@ -1,30 +1,64 @@
-using Asp.Versioning;
-using Fcs.Donations.WebApi.Extensions;
-using Fcs.Donations.WebApi.Observability;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.OData;
-using Microsoft.OpenApi.Models;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
-using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using Asp.Versioning;
+using Fcs.Donations.WebApi.Filters;
+using Fcs.Donations.WebApi.Observability;
+using Fcs.Donations.WebApi.Settings;
+using Fcs.Donations.WebApi.Swagger;
+using Microsoft.AspNetCore.OData;
+using Serilog;
+using Serilog.Sinks.OpenTelemetry;
 
 namespace Fcs.Donations.WebApi.DependencyInjection;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInjection
 {
-    [ExcludeFromCodeCoverage]
     public static IServiceCollection AddWebApi(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpContextAccessor();
-        services.AddAuthorization();
         services.AddControllers()
             .AddOData(options => options.Select().Filter().OrderBy().Count().SetMaxTop(100))
-            .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
+        services.AddEndpointsApiExplorer();
+        services.AddDonationsSwagger();
+        services.AddCorsConfiguration(configuration);
+        services.AddVersioning();
+        services.AddFilters();
+        services.AddRouting(options => options.LowercaseUrls = true);
+        services.AddObservabilitySettings(configuration);
+        services.AddObservability(configuration);
+        services.AddSerilogLogging(configuration);
+
+        return services;
+    }
+
+    private static void AddCorsConfiguration(this IServiceCollection services, IConfiguration configuration)
+    {
+        var settings = configuration
+            .GetSection(CorsSettings.SectionName)
+            .Get<CorsSettings>()
+            ?? new CorsSettings { AllowedOrigins = ["http://localhost:4200", "http://127.0.0.1:4200"] };
+
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            {
+                policy
+                    .WithOrigins(settings.AllowedOrigins)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            });
+        });
+    }
+
+    private static void AddVersioning(this IServiceCollection services)
+    {
         services.AddApiVersioning(options =>
         {
             options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -36,101 +70,89 @@ public static class DependencyInjection
             options.GroupNameFormat = "'v'VVV";
             options.SubstituteApiVersionInUrl = true;
         });
+    }
 
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen(options =>
+    private static void AddFilters(this IServiceCollection services)
+    {
+        services.AddMvc(options =>
         {
-            options.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = "Fcs.Donations API",
-                Version = "v1"
-            });
-
-            options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
-            {
-                Name = "Authorization",
-                Description = "Informe o token JWT no formato: Bearer {token}",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
-                BearerFormat = "JWT"
-            });
-
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = JwtBearerDefaults.AuthenticationScheme
-                        }
-                    },
-                    Array.Empty<string>()
-                }
-            });
+            options.Filters.Add<TrimStringsActionFilter>();
         });
-
-        services.AddHealthChecks();
-        services.AddRouting(options => options.LowercaseUrls = true);
-
-        services.AddObservability(configuration);
-        services.AddSerilogLogging();
-
-        return services;
     }
 
-    [ExcludeFromCodeCoverage]
-    public static WebApplication UseWebApiPipeline(this WebApplication app)
+    private static void AddObservability(this IServiceCollection services, IConfiguration configuration)
     {
-        app.UseGlobalCorrelationId();
-        app.UseCustomerExceptionHandler();
-        app.UseSwagger();
-        app.UseSwaggerUI();
-        app.UseAuthentication();
-        app.UseAuthorization();
-        app.MapControllers();
-        app.MapHealthChecks("/health", new HealthCheckOptions());
-        return app;
-    }
-
-    private static IServiceCollection AddObservability(this IServiceCollection services, IConfiguration configuration)
-    {
-        var options = new ObservabilityOptions();
-        configuration.GetSection(ObservabilityOptions.SectionName).Bind(options);
+        var settings = GetObservabilitySettings(configuration);
+        var environment = configuration["ASPNETCORE_ENVIRONMENT"] ?? "Production";
+        var resourceBuilder = ObservabilityTelemetry.CreateResourceBuilder(settings, environment);
 
         services.AddOpenTelemetry()
-            .ConfigureResource(resource => resource.AddService(options.ServiceName))
-            .WithTracing(builder =>
-            {
-                builder.AddAspNetCoreInstrumentation();
-                builder.AddHttpClientInstrumentation();
-            })
-            .WithMetrics(builder =>
-            {
-                builder.AddAspNetCoreInstrumentation();
-                builder.AddHttpClientInstrumentation();
-                builder.AddRuntimeInstrumentation();
-            });
-
-        return services;
+            .WithTracing(builder => builder.ConfigureTracing(settings, resourceBuilder))
+            .WithMetrics(builder => builder.ConfigureMetrics(settings, resourceBuilder));
     }
 
-    private static IServiceCollection AddSerilogLogging(this IServiceCollection services)
+    private static void AddSerilogLogging(this IServiceCollection services, IConfiguration configuration)
     {
-        Log.Logger = new LoggerConfiguration()
+        var settings = GetObservabilitySettings(configuration);
+        var environment = configuration["ASPNETCORE_ENVIRONMENT"] ?? "Production";
+
+        var loggerConfiguration = new LoggerConfiguration()
             .MinimumLevel.Information()
             .Enrich.FromLogContext()
-            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{CorrelationId}] {Message:lj}{NewLine}{Exception}")
-            .CreateLogger();
+            .Enrich.WithMachineName()
+            .Enrich.WithProperty("Application", "Fcs.Donations")
+            .Enrich.WithProperty("Environment", environment)
+            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{CorrelationId}] {Message:lj}{NewLine}{Exception}");
 
-        services.AddLogging(builder =>
+        if (settings.EnableOtlpExporter && !string.IsNullOrWhiteSpace(settings.OtlpEndpoint))
         {
-            builder.ClearProviders();
-            builder.AddSerilog();
-        });
+            loggerConfiguration.WriteTo.OpenTelemetry(options =>
+            {
+                options.Endpoint = $"{settings.OtlpEndpoint}/otlp/v1/logs";
+                options.Protocol = OtlpProtocol.HttpProtobuf;
 
-        return services;
+                if (!string.IsNullOrWhiteSpace(settings.OtlpAuthHeader))
+                {
+                    options.Headers = new Dictionary<string, string>
+                    {
+                        ["Authorization"] = settings.OtlpAuthHeader
+                    };
+                }
+
+                options.ResourceAttributes = new Dictionary<string, object>
+                {
+                    ["service.name"] = settings.ServiceName,
+                    ["deployment.environment"] = environment
+                };
+            });
+        }
+
+        Log.Logger = loggerConfiguration.CreateLogger();
+
+        Log.Information("Starting {Application} application", "Fcs.Donations");
+        Log.Information("Environment: {Environment}", environment);
+
+        services.AddLogging(loggingBuilder =>
+        {
+            loggingBuilder.ClearProviders();
+            loggingBuilder.AddSerilog();
+        });
+    }
+
+    private static void AddObservabilitySettings(this IServiceCollection services, IConfiguration configuration)
+    {
+        services
+            .AddOptions<ObservabilitySettings>()
+            .Bind(configuration.GetRequiredSection(ObservabilitySettings.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+    }
+
+    private static ObservabilitySettings GetObservabilitySettings(IConfiguration configuration)
+    {
+        return configuration
+            .GetRequiredSection(ObservabilitySettings.SectionName)
+            .Get<ObservabilitySettings>()
+            ?? throw new InvalidOperationException("Observability settings must be configured.");
     }
 }

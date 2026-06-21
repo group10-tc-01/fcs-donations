@@ -1,7 +1,5 @@
 using Fcs.Donations.Application.Abstractions.Messaging;
 using Fcs.Donations.Application.DependencyInjection;
-using Fcs.Donations.Application.Messaging;
-using Fcs.Donations.Application.Settings;
 using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
 using Fcs.Donations.Application.UseCases.Donations.GetDonations;
 using Fcs.Donations.Domain.Donations;
@@ -24,33 +22,6 @@ public sealed class ApplicationSupportTests
 
         result.IsValid.Should().BeFalse();
         result.Errors.Should().HaveCount(2);
-    }
-
-    [Fact]
-    public async Task Given_NullMessagePublisher_When_PublishAsync_Then_ShouldComplete()
-    {
-        var publisher = new NullMessagePublisher();
-
-        var action = async () => await publisher.PublishAsync(new { EventId = Guid.NewGuid() });
-
-        await action.Should().NotThrowAsync();
-    }
-
-    [Fact]
-    public void Given_JwtSettings_When_PropertiesAreSet_Then_ShouldKeepValues()
-    {
-        var settings = new JwtSettings
-        {
-            SecretKey = "secret",
-            Issuer = "issuer",
-            Audience = "audience",
-            AccessTokenExpirationMinutes = 10
-        };
-
-        settings.SecretKey.Should().Be("secret");
-        settings.Issuer.Should().Be("issuer");
-        settings.Audience.Should().Be("audience");
-        settings.AccessTokenExpirationMinutes.Should().Be(10);
     }
 
     [Fact]
@@ -94,12 +65,9 @@ public sealed class ApplicationSupportTests
 
         using var provider = services.BuildServiceProvider();
 
-        provider.GetRequiredService<IMessagePublisher>().Should().BeOfType<NullMessagePublisher>();
         provider.GetServices<IValidator<CreateDonationRequest>>().Should().NotBeEmpty();
-          
-        services.Should().Contain(descriptor =>
-            descriptor.ServiceType == typeof(IMessagePublisher) &&
-            descriptor.ImplementationType == typeof(NullMessagePublisher));
+
+        services.Should().NotContain(descriptor => descriptor.ServiceType == typeof(IMessagePublisher));
         services.Should().Contain(descriptor => descriptor.ServiceType == typeof(IValidator<CreateDonationRequest>));
     }
 }

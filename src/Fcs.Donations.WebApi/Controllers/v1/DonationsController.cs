@@ -1,4 +1,3 @@
-using Fcs.Donations.Application.Abstractions.Authentication;
 using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
 using Fcs.Donations.Application.UseCases.Donations.GetDonations;
 using Fcs.Donations.WebApi.Extensions;
@@ -13,33 +12,24 @@ namespace Fcs.Donations.WebApi.Controllers.v1;
 [Authorize(Roles = "Doador")]
 public sealed class DonationsController : BaseApiController
 {
-    private const string DonationUnauthenticatedMessage = "User must be authenticated.";
-    private readonly IDonationQueryService _donationQueryService;
-    private readonly ILoggedUserService _loggedUser;
-
-    public DonationsController(
-        IMediator mediator,
-        IDonationQueryService donationQueryService,
-        ILoggedUserService loggedUser) : base(mediator)
+    public DonationsController(IMediator mediator) : base(mediator)
     {
-        _donationQueryService = donationQueryService;
-        _loggedUser = loggedUser;
     }
 
     [HttpGet]
     [EnableQuery(MaxTop = 100)]
     [ProducesResponseType(typeof(IQueryable<DonationQueryResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status401Unauthorized)]
-    public IActionResult Get()
+    public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
-        var donorId = _loggedUser.GetUserId();
+        var result = await Mediator.Send(new GetDonationsQuery(), cancellationToken);
 
-        if (donorId is null)
+        if (result.IsFailure)
         {
-            return Unauthorized(ApiResponse<string>.FromFailure(DonationUnauthenticatedMessage));
+            return result.Error.ToActionResult();
         }
 
-        return Ok(_donationQueryService.QueryByDonor(donorId.Value));
+        return Ok(result.Value);
     }
 
     [HttpPost]

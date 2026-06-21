@@ -1,5 +1,5 @@
-using Fcs.Donations.Application.Abstractions.ExternalServices;
 using System.Diagnostics.CodeAnalysis;
+using Fcs.Donations.Application.Abstractions.ExternalServices;
 
 namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 

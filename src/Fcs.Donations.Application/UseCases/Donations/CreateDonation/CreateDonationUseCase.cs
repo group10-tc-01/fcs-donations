@@ -1,12 +1,11 @@
+using System.Text.Json;
 using Fcs.Donations.Application.Abstractions.Authentication;
 using Fcs.Donations.Application.Abstractions.ExternalServices;
-using Fcs.Donations.Application.Abstractions.Messaging;
-using Fcs.Donations.Domain;
 using Fcs.Donations.Domain.Abstractions;
 using Fcs.Donations.Domain.Donations;
 using Fcs.Donations.Domain.OutboxMessages;
+using Fcs.Donations.Domain.Results;
 using Fcs.Donations.Messages;
-using System.Text.Json;
 
 namespace Fcs.Donations.Application.UseCases.Donations.CreateDonation;
 
@@ -16,27 +15,26 @@ public sealed class CreateDonationUseCase : ICreateDonationUseCase
     private readonly IOutboxMessageRepository _outboxMessageRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICampaignEligibilityClient _campaignClient;
-    private readonly ILoggedUserService _loggedUser;
+    private readonly ICurrentUser _currentUser;
 
     public CreateDonationUseCase(
         IDonationRepository donationRepository,
         IOutboxMessageRepository outboxMessageRepository,
         IUnitOfWork unitOfWork,
         ICampaignEligibilityClient campaignClient,
-        ILoggedUserService loggedUser)
+        ICurrentUser currentUser)
     {
         _donationRepository = donationRepository;
         _outboxMessageRepository = outboxMessageRepository;
         _unitOfWork = unitOfWork;
         _campaignClient = campaignClient;
-        _loggedUser = loggedUser;
+        _currentUser = currentUser;
     }
 
     public async Task<Result<CreateDonationResponse>> Handle(CreateDonationRequest request, CancellationToken cancellationToken)
     {
-        var donorId = _loggedUser.GetUserId();
-
-        if (donorId is null)
+        if (!_currentUser.IsAuthenticated ||
+            !Guid.TryParse(_currentUser.KeycloakUserId, out var donorId))
         {
             return Error.Failure(ResourceMessages.DonationUnauthenticatedCode, ResourceMessages.DonationUnauthenticated);
         }
@@ -50,7 +48,7 @@ public sealed class CreateDonationUseCase : ICreateDonationUseCase
                 eligibility.Reason ?? ResourceMessages.CampaignNotEligible);
         }
 
-        var donationResult = Donation.Create(request.CampaignId, donorId.Value, request.Amount);
+        var donationResult = Donation.Create(request.CampaignId, donorId, request.Amount);
 
         if (donationResult.IsFailure)
         {
