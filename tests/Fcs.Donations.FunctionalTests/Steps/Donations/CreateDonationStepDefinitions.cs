@@ -12,7 +12,7 @@ public sealed class CreateDonationStepDefinitions
     private CreateDonationRequest _request = default!;
     private CreateDonationResponse? _response;
     private readonly FakeCampaignEligibilityClient _campaignClient = new();
-    private readonly FakeLoggedUserService _loggedUser = new();
+    private readonly FakeCurrentUser _currentUser = new();
 
     [Given("que eu possuo uma requisicao valida de doacao")]
     public void GivenQueEuPossuoUmaRequisicaoValidaDeDoacao()
@@ -34,7 +34,7 @@ public sealed class CreateDonationStepDefinitions
             new InMemoryOutboxMessageRepository(),
             new FakeUnitOfWork(),
             _campaignClient,
-            _loggedUser);
+            _currentUser);
 
         var result = await sut.Handle(_request, CancellationToken.None);
         _response = result.Value;

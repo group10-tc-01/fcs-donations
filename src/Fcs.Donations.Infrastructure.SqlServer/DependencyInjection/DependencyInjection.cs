@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Fcs.Donations.Application.UseCases.Donations.GetDonations;
 using Fcs.Donations.Domain.Abstractions;
 using Fcs.Donations.Domain.Donations;
 using Fcs.Donations.Domain.OutboxMessages;
@@ -21,7 +20,6 @@ public static class DependencyInjection
             options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
 
         services.AddScoped<IDonationRepository, DonationRepository>();
-        services.AddScoped<IDonationQueryService, DonationQueryService>();
         services.AddScoped<IOutboxMessageRepository, OutboxMessageRepository>();
         services.AddScoped<IProcessedMessageRepository, ProcessedMessageRepository>();
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<FcsDonationsDbContext>());

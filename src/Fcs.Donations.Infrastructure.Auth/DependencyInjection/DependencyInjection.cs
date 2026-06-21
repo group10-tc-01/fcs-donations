@@ -2,7 +2,7 @@ using System.Security.Claims;
 using System.Text.Json;
 using Fcs.Donations.Application.Abstractions.Authentication;
 using Fcs.Donations.Infrastructure.Auth.Authentication;
-using Fcs.Identity.Infrastructure.Keycloak.Settings;
+using Fcs.Donations.Infrastructure.Auth.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -73,6 +73,8 @@ public static class DependencyInjection
         });
 
         services.AddAuthorization();
+
+        services.AddScoped<ICurrentUser, HttpContextCurrentUser>();
 
         return services;
 

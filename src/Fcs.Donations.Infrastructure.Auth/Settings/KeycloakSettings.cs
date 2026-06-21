@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Fcs.Identity.Infrastructure.Keycloak.Settings;
+namespace Fcs.Donations.Infrastructure.Auth.Settings;
 
 [ExcludeFromCodeCoverage]
 public sealed class KeycloakSettings
