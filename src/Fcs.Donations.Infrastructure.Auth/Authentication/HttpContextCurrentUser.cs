@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using System.Text.Json;
 using Fcs.Donations.Application.Abstractions.Authentication;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Fcs.Donations.Infrastructure.Auth.Authentication;
 
+[ExcludeFromCodeCoverage]
 public sealed class HttpContextCurrentUser : ICurrentUser
 {
     private readonly IHttpContextAccessor _httpContextAccessor;

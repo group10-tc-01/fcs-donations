@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using System.Text.Json;
 using Fcs.Donations.Application.Abstractions.Authentication;
@@ -11,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Fcs.Donations.Infrastructure.Auth.DependencyInjection;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInjection
 {
     public static IServiceCollection AddAuthInfrastructure(this IServiceCollection services, IConfiguration configuration)
