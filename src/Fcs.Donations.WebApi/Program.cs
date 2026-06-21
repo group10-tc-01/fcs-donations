@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fcs.Donations.Application.DependencyInjection;
 using Fcs.Donations.Infrastructure.Auth.DependencyInjection;
 using Fcs.Donations.Infrastructure.Http.DependencyInjection;
@@ -6,7 +7,6 @@ using Fcs.Donations.Infrastructure.SqlServer.DependencyInjection;
 using Fcs.Donations.Infrastructure.SqlServer.Persistence;
 using Fcs.Donations.WebApi.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.WebApi;
 

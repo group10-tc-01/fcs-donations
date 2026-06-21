@@ -1,6 +1,6 @@
+using System.Security.Claims;
 using Fcs.Donations.Application.Abstractions.Authentication;
 using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 
 namespace Fcs.Donations.Infrastructure.Auth.Authentication;
 

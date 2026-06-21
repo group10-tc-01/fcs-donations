@@ -1,3 +1,4 @@
+using System.Text;
 using Fcs.Donations.Application.Abstractions.Authentication;
 using Fcs.Donations.Application.Settings;
 using Fcs.Donations.Infrastructure.Auth.Authentication;
@@ -5,7 +6,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace Fcs.Donations.Infrastructure.Auth.DependencyInjection;
 

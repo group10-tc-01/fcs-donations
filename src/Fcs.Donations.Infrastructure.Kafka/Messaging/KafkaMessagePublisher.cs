@@ -1,9 +1,9 @@
+using System.Text.Json;
 using Confluent.Kafka;
 using Fcs.Donations.Application.Abstractions.Messaging;
 using Fcs.Donations.Infrastructure.Kafka.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Text.Json;
 
 namespace Fcs.Donations.Infrastructure.Kafka.Messaging;
 

@@ -96,7 +96,7 @@ public sealed class ApplicationSupportTests
 
         provider.GetRequiredService<IMessagePublisher>().Should().BeOfType<NullMessagePublisher>();
         provider.GetServices<IValidator<CreateDonationRequest>>().Should().NotBeEmpty();
-          
+
         services.Should().Contain(descriptor =>
             descriptor.ServiceType == typeof(IMessagePublisher) &&
             descriptor.ImplementationType == typeof(NullMessagePublisher));

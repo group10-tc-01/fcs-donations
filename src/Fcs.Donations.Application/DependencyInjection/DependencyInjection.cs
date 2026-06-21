@@ -1,9 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using Fcs.Donations.Application.Abstractions.Messaging;
 using Fcs.Donations.Application.Messaging;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 
 namespace Fcs.Donations.Application.DependencyInjection;
 

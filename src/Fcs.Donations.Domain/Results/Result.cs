@@ -1,4 +1,4 @@
-namespace Fcs.Donations.Domain;
+namespace Fcs.Donations.Domain.Results;
 
 public readonly struct Result<TValue>
 {

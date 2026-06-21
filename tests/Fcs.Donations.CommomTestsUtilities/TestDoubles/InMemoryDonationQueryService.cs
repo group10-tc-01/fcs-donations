@@ -1,5 +1,5 @@
-using Fcs.Donations.Application.UseCases.Donations.GetDonations;
 using System.Diagnostics.CodeAnalysis;
+using Fcs.Donations.Application.UseCases.Donations.GetDonations;
 
 namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 

@@ -1,6 +1,6 @@
+using System.Diagnostics.CodeAnalysis;
 using Fcs.Donations.Application.UseCases.Donations.GetDonations;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
 

@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using Asp.Versioning;
 using Fcs.Donations.WebApi.Extensions;
 using Fcs.Donations.WebApi.Observability;
@@ -9,8 +11,6 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace Fcs.Donations.WebApi.DependencyInjection;
 

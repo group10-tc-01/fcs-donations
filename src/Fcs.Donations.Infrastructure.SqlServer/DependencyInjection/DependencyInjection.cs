@@ -1,14 +1,14 @@
+using System.Diagnostics.CodeAnalysis;
+using Fcs.Donations.Application.UseCases.Donations.GetDonations;
 using Fcs.Donations.Domain.Abstractions;
 using Fcs.Donations.Domain.Donations;
 using Fcs.Donations.Domain.OutboxMessages;
 using Fcs.Donations.Domain.ProcessedMessages;
-using Fcs.Donations.Application.UseCases.Donations.GetDonations;
 using Fcs.Donations.Infrastructure.SqlServer.Persistence;
 using Fcs.Donations.Infrastructure.SqlServer.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.Infrastructure.SqlServer.DependencyInjection;
 
