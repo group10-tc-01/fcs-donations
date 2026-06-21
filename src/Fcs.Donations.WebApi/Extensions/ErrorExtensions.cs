@@ -12,6 +12,10 @@ public static class ErrorExtensions
             ErrorType.NotFound => new NotFoundObjectResult(ApiResponse<string>.FromFailure(error.Message)),
             ErrorType.Conflict => new ConflictObjectResult(ApiResponse<string>.FromFailure(error.Message)),
             ErrorType.Validation => new BadRequestObjectResult(ApiResponse<string>.FromFailure(error.Message)),
+            ErrorType.ServiceUnavailable => new ObjectResult(ApiResponse<string>.FromFailure(error.Message))
+            {
+                StatusCode = StatusCodes.Status503ServiceUnavailable
+            },
             _ => new ObjectResult(ApiResponse<string>.FromFailure(error.Message)) { StatusCode = StatusCodes.Status500InternalServerError }
         };
 }

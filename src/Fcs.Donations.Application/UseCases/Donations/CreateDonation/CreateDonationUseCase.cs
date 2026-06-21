@@ -39,13 +39,18 @@ public sealed class CreateDonationUseCase : ICreateDonationUseCase
             return Error.Failure(ResourceMessages.DonationUnauthenticatedCode, ResourceMessages.DonationUnauthenticated);
         }
 
-        var eligibility = await _campaignClient.CheckEligibilityAsync(request.CampaignId, cancellationToken);
+        var eligibilityResult = await _campaignClient.CheckEligibilityAsync(request.CampaignId, cancellationToken);
 
-        if (!eligibility.IsEligible)
+        if (eligibilityResult.IsFailure)
         {
-            return Error.Conflict(
+            return eligibilityResult.Error;
+        }
+
+        if (!eligibilityResult.Value.IsEligible)
+        {
+            return Error.Validation(
                 ResourceMessages.DonationCampaignNotEligibleCode,
-                eligibility.Reason ?? ResourceMessages.CampaignNotEligible);
+                eligibilityResult.Value.Reason ?? ResourceMessages.CampaignNotEligible);
         }
 
         var donationResult = Donation.Create(request.CampaignId, donorId, request.Amount);
