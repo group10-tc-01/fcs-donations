@@ -1,5 +1,5 @@
 <Solution>
-  <Folder Name="/Itens de Solução/">
+  <Folder Name="/Solution Items/">
     <File Path=".dockerignore" />
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
@@ -10,15 +10,22 @@
     <File Path="nuget.config" />
     <File Path="README.md" />
   </Folder>
-  <Folder Name="/src/">
-    <Project Path="src/Fcs.Donations.Application/Fcs.Donations.Application.csproj" />
+  <Folder Name="/src/" />
+  <Folder Name="/src/0 - Domain/">
     <Project Path="src/Fcs.Donations.Domain/Fcs.Donations.Domain.csproj" />
+    <Project Path="src/Fcs.Donations.Messages/Fcs.Donations.Messages.csproj" />
+  </Folder>
+  <Folder Name="/src/1  - Application/">
+    <Project Path="src/Fcs.Donations.Application/Fcs.Donations.Application.csproj" />
+  </Folder>
+  <Folder Name="/src/2 - Infrastructure/">
     <Project Path="src/Fcs.Donations.Infrastructure.Auth/Fcs.Donations.Infrastructure.Auth.csproj" />
     <Project Path="src/Fcs.Donations.Infrastructure.Http/Fcs.Donations.Infrastructure.Http.csproj" />
     <Project Path="src/Fcs.Donations.Infrastructure.Kafka/Fcs.Donations.Infrastructure.Kafka.csproj" />
     <Project Path="src/Fcs.Donations.Infrastructure.MongoDb/Fcs.Donations.Infrastructure.MongoDb.csproj" />
     <Project Path="src/Fcs.Donations.Infrastructure.SqlServer/Fcs.Donations.Infrastructure.SqlServer.csproj" />
-    <Project Path="src/Fcs.Donations.Messages/Fcs.Donations.Messages.csproj" />
+  </Folder>
+  <Folder Name="/src/3 - WebApi/">
     <Project Path="src/Fcs.Donations.WebApi/Fcs.Donations.WebApi.csproj" />
   </Folder>
   <Folder Name="/tests/">
