@@ -53,5 +53,6 @@ public sealed class ResultTests
         Error.Validation("Validation", "Validation message.").Type.Should().Be(ErrorType.Validation);
         Error.NotFound("NotFound", "Not found message.").Type.Should().Be(ErrorType.NotFound);
         Error.Conflict("Conflict", "Conflict message.").Type.Should().Be(ErrorType.Conflict);
+        Error.ServiceUnavailable("Unavailable", "Unavailable message.").Type.Should().Be(ErrorType.ServiceUnavailable);
     }
 }
