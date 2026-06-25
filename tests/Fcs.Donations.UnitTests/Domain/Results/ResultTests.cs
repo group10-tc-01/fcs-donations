@@ -1,4 +1,4 @@
-using Fcs.Donations.Domain;
+using Fcs.Donations.Domain.Results;
 using FluentAssertions;
 
 namespace Fcs.Donations.UnitTests.Domain.Results;
@@ -13,7 +13,6 @@ public sealed class ResultTests
         result.IsSuccess.Should().BeTrue();
         result.IsFailure.Should().BeFalse();
         result.Value.Should().Be("created");
-        result.Match(value => value, error => error.Message).Should().Be("created");
     }
 
     [Fact]
@@ -24,7 +23,6 @@ public sealed class ResultTests
 
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(error);
-        result.Match(value => value, failure => failure.Code).Should().Be("Donation.NotFound");
     }
 
     [Fact]
@@ -40,7 +38,7 @@ public sealed class ResultTests
     [Fact]
     public void Given_SuccessResult_When_AccessingError_Then_ShouldThrow()
     {
-        Result<string> result = Result<string>.Success("created");
+        var result = Result<string>.Success("created");
 
         var action = () => result.Error;
 

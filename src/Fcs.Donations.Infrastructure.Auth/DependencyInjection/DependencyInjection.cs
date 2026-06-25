@@ -1,20 +1,28 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
+using System.Text.Json;
 using Fcs.Donations.Application.Abstractions.Authentication;
-using Fcs.Donations.Application.Settings;
 using Fcs.Donations.Infrastructure.Auth.Authentication;
+using Fcs.Donations.Infrastructure.Auth.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using System.Text.Json;
 
 namespace Fcs.Donations.Infrastructure.Auth.DependencyInjection;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInjection
 {
     public static IServiceCollection AddAuthInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
+        services.AddKeycloakOptions(configuration);
+
+        var keycloak = services
+            .BuildServiceProvider()
+            .GetRequiredService<IOptions<KeycloakSettings>>()
+            .Value;
 
         services.AddAuthentication(options =>
         {
@@ -22,8 +30,8 @@ public static class DependencyInjection
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(options =>
         {
-            options.Authority = configuration["Keycloak:Authority"];
-            options.Audience = configuration["Keycloak:Audience"];
+            options.Authority = keycloak.Authority;
+            options.Audience = keycloak.Audience;
             options.RequireHttpsMetadata = false;
             options.TokenValidationParameters = new TokenValidationParameters
             {
@@ -66,9 +74,21 @@ public static class DependencyInjection
             };
         });
 
-        services.AddScoped<IPasswordEncrypterService, PasswordEncrypterService>();
-        services.AddScoped<ITokenProviderService, TokenProviderService>();
-        services.AddScoped<ILoggedUserService, LoggedUserService>();
+        services.AddAuthorization();
+
+        services.AddScoped<ICurrentUser, HttpContextCurrentUser>();
+
+        return services;
+
+    }
+
+    private static IServiceCollection AddKeycloakOptions(this IServiceCollection services, IConfiguration configuration)
+    {
+        services
+            .AddOptions<KeycloakSettings>()
+            .Bind(configuration.GetRequiredSection(KeycloakSettings.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
         return services;
     }

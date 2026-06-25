@@ -12,6 +12,8 @@ public sealed class DonationRepository : IDonationRepository
         _dbContext = dbContext;
     }
 
+    public IQueryable<Donation> Query() => _dbContext.Donations.AsNoTracking();
+
     public Task AddAsync(Donation donation, CancellationToken cancellationToken = default)
     {
         return _dbContext.Donations.AddAsync(donation, cancellationToken).AsTask();

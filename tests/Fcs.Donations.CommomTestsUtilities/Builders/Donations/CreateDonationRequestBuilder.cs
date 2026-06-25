@@ -1,6 +1,6 @@
+using System.Diagnostics.CodeAnalysis;
 using Bogus;
 using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Fcs.Donations.CommomTestsUtilities.Builders.Donations;
 

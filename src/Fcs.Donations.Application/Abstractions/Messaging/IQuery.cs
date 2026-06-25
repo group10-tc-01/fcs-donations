@@ -1,5 +1,5 @@
+using Fcs.Donations.Domain.Results;
 using MediatR;
-using Fcs.Donations.Domain;
 
 namespace Fcs.Donations.Application.Abstractions.Messaging;
 

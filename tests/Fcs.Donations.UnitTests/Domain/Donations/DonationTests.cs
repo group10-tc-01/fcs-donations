@@ -1,5 +1,5 @@
-using Fcs.Donations.Domain;
 using Fcs.Donations.Domain.Donations;
+using Fcs.Donations.Domain.Results;
 using FluentAssertions;
 
 namespace Fcs.Donations.UnitTests.Domain.Donations;

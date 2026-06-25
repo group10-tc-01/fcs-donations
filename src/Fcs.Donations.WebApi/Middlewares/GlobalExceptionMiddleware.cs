@@ -1,7 +1,7 @@
-using Fcs.Donations.WebApi.Models;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.Json;
+using Fcs.Donations.WebApi.Models;
 
 namespace Fcs.Donations.WebApi.Middlewares;
 

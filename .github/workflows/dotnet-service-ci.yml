@@ -39,6 +39,7 @@ jobs:
       solution_path: Fcs.Donations.slnx
       unit_tests_path: tests/Fcs.Donations.UnitTests/Fcs.Donations.UnitTests.csproj
       integration_tests_path: tests/Fcs.Donations.IntegratedTests/Fcs.Donations.IntegratedTests.csproj
+      functional_tests_path: tests/Fcs.Donations.FunctionalTests/Fcs.Donations.FunctionalTests.csproj
       test_environment: Test
       coverage_threshold: 80
       run_sonar: true

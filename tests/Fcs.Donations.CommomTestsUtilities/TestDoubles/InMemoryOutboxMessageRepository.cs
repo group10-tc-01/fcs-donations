@@ -1,5 +1,5 @@
-using Fcs.Donations.Domain.OutboxMessages;
 using System.Diagnostics.CodeAnalysis;
+using Fcs.Donations.Domain.OutboxMessages;
 
 namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 

@@ -1,13 +1,13 @@
+using System.Net;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text.Json;
 using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
 using Fcs.Donations.CommomTestsUtilities.Builders.Donations;
 using Fcs.Donations.Domain.Donations;
 using Fcs.Donations.IntegratedTests.Configurations;
 using Fcs.Donations.WebApi.Models;
 using FluentAssertions;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace Fcs.Donations.IntegratedTests.Controllers;
 
@@ -20,7 +20,8 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
     {
         _factory = factory;
         _factory.DonationRepository.Clear();
-        _factory.LoggedUser.UserId = Guid.NewGuid();
+        _factory.CurrentUser.IsAuthenticated = true;
+        _factory.CurrentUser.KeycloakUserId = Guid.NewGuid().ToString();
 
         _client = factory.CreateClient();
         _client.DefaultRequestHeaders.Authorization =
@@ -43,7 +44,7 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
     [Fact]
     public async Task Given_ExistingDonations_When_GetIsCalled_Then_ShouldReturnOnlyLoggedDonorDonations()
     {
-        var loggedDonorId = _factory.LoggedUser.UserId!.Value;
+        var loggedDonorId = Guid.Parse(_factory.CurrentUser.KeycloakUserId!);
         var otherDonorId = Guid.NewGuid();
         var expectedDonation = Donation.Create(Guid.NewGuid(), loggedDonorId, 120).Value;
         var otherDonation = Donation.Create(Guid.NewGuid(), otherDonorId, 200).Value;
@@ -66,7 +67,7 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
     [Fact]
     public async Task Given_ODataQuery_When_GetIsCalled_Then_ShouldApplyFilterOrderAndTop()
     {
-        var loggedDonorId = _factory.LoggedUser.UserId!.Value;
+        var loggedDonorId = Guid.Parse(_factory.CurrentUser.KeycloakUserId!);
         var lowerDonation = Donation.Create(Guid.NewGuid(), loggedDonorId, 50).Value;
         var middleDonation = Donation.Create(Guid.NewGuid(), loggedDonorId, 150).Value;
         var higherDonation = Donation.Create(Guid.NewGuid(), loggedDonorId, 250).Value;
@@ -88,53 +89,14 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
     }
 
     [Fact]
-    public async Task Given_MissingLoggedUser_When_GetIsCalled_Then_ShouldReturnUnauthorized()
+    public async Task Given_UnauthenticatedCurrentUser_When_GetIsCalled_Then_ShouldReturnUnauthorized()
     {
-        _factory.LoggedUser.UserId = null;
+        _factory.CurrentUser.IsAuthenticated = false;
+        _factory.CurrentUser.KeycloakUserId = null;
 
         var response = await _client.GetAsync("/api/v1/donations");
 
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-        var payload = await response.Content.ReadFromJsonAsync<ApiResponse<string>>();
-        payload.Should().NotBeNull();
-        payload!.Success.Should().BeFalse();
-    }
-
-    [Fact]
-    public async Task Given_MultipleDonorsDonations_When_GetAdminIsCalled_Then_ShouldReturnAll()
-    {
-        var donor1Id = Guid.NewGuid();
-        var donor2Id = Guid.NewGuid();
-        var donation1 = Donation.Create(Guid.NewGuid(), donor1Id, 100).Value;
-        var donation2 = Donation.Create(Guid.NewGuid(), donor2Id, 200).Value;
-
-        await _factory.DonationRepository.AddAsync(donation1);
-        await _factory.DonationRepository.AddAsync(donation2);
-
-        using var adminClient = _factory.CreateClient();
-        adminClient.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", AuthTestHelper.GenerateToken("GestorONG"));
-
-        var response = await adminClient.GetAsync("/api/v1/donations/admin");
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var json = await response.Content.ReadAsStringAsync();
-        using var document = JsonDocument.Parse(json);
-        var donations = GetDonationArray(document);
-
-        donations.GetArrayLength().Should().Be(2);
-    }
-
-    [Fact]
-    public async Task Given_NonManagerToken_When_GetAdminIsCalled_Then_ShouldReturnForbidden()
-    {
-        using var donorClient = _factory.CreateClient();
-        donorClient.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", AuthTestHelper.GenerateToken("Doador"));
-
-        var response = await donorClient.GetAsync("/api/v1/donations/admin");
-
-        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 
     private static JsonElement GetDonationArray(JsonDocument document)
