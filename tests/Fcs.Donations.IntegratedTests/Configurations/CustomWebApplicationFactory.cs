@@ -6,10 +6,14 @@ using Fcs.Donations.Domain.Abstractions;
 using Fcs.Donations.Domain.Donations;
 using Fcs.Donations.Domain.OutboxMessages;
 using Fcs.Donations.WebApi;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
 
 namespace Fcs.Donations.IntegratedTests.Configurations;
 
@@ -34,6 +38,21 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
         builder.ConfigureServices(services =>
         {
+            services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                options.Authority = null;
+                options.MetadataAddress = string.Empty;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AuthTestHelper.SecretKey)),
+                    NameClaimType = "preferred_username",
+                    RoleClaimType = ClaimTypes.Role
+                };
+            });
+
             services.RemoveAll<IDonationRepository>();
             services.RemoveAll<IDonationQueryService>();
             services.RemoveAll<IOutboxMessageRepository>();

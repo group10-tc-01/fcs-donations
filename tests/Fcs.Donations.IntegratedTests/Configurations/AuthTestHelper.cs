@@ -9,7 +9,7 @@ public static class AuthTestHelper
 {
     public static string SecretKey { get; } = new('t', 40);
 
-    public static string GenerateToken()
+    public static string GenerateToken(string role = "Doador")
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -17,8 +17,8 @@ public static class AuthTestHelper
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.Role, "Doador"),
-            new Claim(ClaimTypes.Email, "doador@test.com")
+            new Claim(ClaimTypes.Role, role),
+            new Claim(ClaimTypes.Email, $"test@{role.ToLowerInvariant()}.test")
         };
 
         var token = new JwtSecurityToken(

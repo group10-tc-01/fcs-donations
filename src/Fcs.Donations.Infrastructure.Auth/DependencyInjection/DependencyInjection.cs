@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using System.Security.Claims;
+using System.Text.Json;
 
 namespace Fcs.Donations.Infrastructure.Auth.DependencyInjection;
 
@@ -15,27 +16,53 @@ public static class DependencyInjection
     {
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
 
-        var jwtSettings = configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()
-            ?? throw new InvalidOperationException("JwtSettings must be configured.");
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey));
-
         services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(options =>
         {
+            options.Authority = configuration["Keycloak:Authority"];
+            options.Audience = configuration["Keycloak:Audience"];
+            options.RequireHttpsMetadata = false;
             options.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = key,
-                ValidateIssuer = true,
-                ValidIssuer = jwtSettings.Issuer,
-                ValidateAudience = true,
-                ValidAudience = jwtSettings.Audience,
+                ValidateAudience = false,
                 ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero
+                NameClaimType = "preferred_username",
+                RoleClaimType = ClaimTypes.Role
+            };
+            options.Events = new JwtBearerEvents
+            {
+                OnTokenValidated = context =>
+                {
+                    if (context.Principal?.Identity is not ClaimsIdentity identity)
+                    {
+                        return Task.CompletedTask;
+                    }
+
+                    var realmAccess = context.Principal.FindFirstValue("realm_access");
+                    if (string.IsNullOrWhiteSpace(realmAccess))
+                    {
+                        return Task.CompletedTask;
+                    }
+
+                    using var document = JsonDocument.Parse(realmAccess);
+                    if (!document.RootElement.TryGetProperty("roles", out var roles) || roles.ValueKind != JsonValueKind.Array)
+                    {
+                        return Task.CompletedTask;
+                    }
+
+                    foreach (var role in roles.EnumerateArray())
+                    {
+                        if (role.ValueKind == JsonValueKind.String)
+                        {
+                            identity.AddClaim(new Claim(ClaimTypes.Role, role.GetString()!));
+                        }
+                    }
+
+                    return Task.CompletedTask;
+                }
             };
         });
 

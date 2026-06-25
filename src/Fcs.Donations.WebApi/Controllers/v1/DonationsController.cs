@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.OData.Query;
 
 namespace Fcs.Donations.WebApi.Controllers.v1;
 
-[Authorize(Roles = "Doador")]
 public sealed class DonationsController : BaseApiController
 {
     private const string DonationUnauthenticatedMessage = "User must be authenticated.";
@@ -27,6 +26,7 @@ public sealed class DonationsController : BaseApiController
     }
 
     [HttpGet]
+    [Authorize(Roles = "Doador")]
     [EnableQuery(MaxTop = 100)]
     [ProducesResponseType(typeof(IQueryable<DonationQueryResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status401Unauthorized)]
@@ -42,7 +42,19 @@ public sealed class DonationsController : BaseApiController
         return Ok(_donationQueryService.QueryByDonor(donorId.Value));
     }
 
+    [HttpGet("admin")]
+    [Authorize(Roles = "GestorONG")]
+    [EnableQuery(MaxTop = 100)]
+    [ProducesResponseType(typeof(IQueryable<DonationQueryResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status403Forbidden)]
+    public IActionResult GetAdmin()
+    {
+        return Ok(_donationQueryService.QueryAll());
+    }
+
     [HttpPost]
+    [Authorize(Roles = "Doador")]
     [ProducesResponseType(typeof(ApiResponse<CreateDonationResponse>), StatusCodes.Status202Accepted)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]

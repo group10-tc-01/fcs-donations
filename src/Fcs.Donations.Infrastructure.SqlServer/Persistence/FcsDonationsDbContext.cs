@@ -1,7 +1,6 @@
 using Fcs.Donations.Domain.Abstractions;
 using Fcs.Donations.Domain.Donations;
 using Fcs.Donations.Domain.OutboxMessages;
-using Fcs.Donations.Domain.ProcessedMessages;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 
@@ -16,7 +15,6 @@ public sealed class FcsDonationsDbContext : DbContext, IUnitOfWork
 
     public DbSet<Donation> Donations => Set<Donation>();
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
-    public DbSet<ProcessedMessage> ProcessedMessages => Set<ProcessedMessage>();
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

@@ -100,6 +100,43 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
         payload!.Success.Should().BeFalse();
     }
 
+    [Fact]
+    public async Task Given_MultipleDonorsDonations_When_GetAdminIsCalled_Then_ShouldReturnAll()
+    {
+        var donor1Id = Guid.NewGuid();
+        var donor2Id = Guid.NewGuid();
+        var donation1 = Donation.Create(Guid.NewGuid(), donor1Id, 100).Value;
+        var donation2 = Donation.Create(Guid.NewGuid(), donor2Id, 200).Value;
+
+        await _factory.DonationRepository.AddAsync(donation1);
+        await _factory.DonationRepository.AddAsync(donation2);
+
+        using var adminClient = _factory.CreateClient();
+        adminClient.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", AuthTestHelper.GenerateToken("GestorONG"));
+
+        var response = await adminClient.GetAsync("/api/v1/donations/admin");
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var json = await response.Content.ReadAsStringAsync();
+        using var document = JsonDocument.Parse(json);
+        var donations = GetDonationArray(document);
+
+        donations.GetArrayLength().Should().Be(2);
+    }
+
+    [Fact]
+    public async Task Given_NonManagerToken_When_GetAdminIsCalled_Then_ShouldReturnForbidden()
+    {
+        using var donorClient = _factory.CreateClient();
+        donorClient.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", AuthTestHelper.GenerateToken("Doador"));
+
+        var response = await donorClient.GetAsync("/api/v1/donations/admin");
+
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+
     private static JsonElement GetDonationArray(JsonDocument document)
     {
         var root = document.RootElement;

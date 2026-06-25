@@ -31,4 +31,21 @@ public sealed class DonationQueryService : IDonationQueryService
                 FailureReason = donation.FailureReason
             });
     }
+
+    public IQueryable<DonationQueryResponse> QueryAll()
+    {
+        return _dbContext.Donations
+            .AsNoTracking()
+            .Select(donation => new DonationQueryResponse
+            {
+                Id = donation.Id,
+                CampaignId = donation.CampaignId,
+                DonorId = donation.DonorId,
+                Amount = donation.Amount,
+                Status = donation.Status,
+                CreatedAt = donation.CreatedAt,
+                ProcessedAt = donation.ProcessedAt,
+                FailureReason = donation.FailureReason
+            });
+    }
 }

@@ -13,7 +13,8 @@ public sealed class CampaignEligibilityClient : ICampaignEligibilityClient
 
     public async Task<CampaignEligibilityResponse> CheckEligibilityAsync(Guid campaignId, CancellationToken cancellationToken)
     {
-        var response = await _api.CheckEligibilityAsync(campaignId, cancellationToken);
-        return new CampaignEligibilityResponse(response.IsEligible, response.Reason);
+        var apiResponse = await _api.CheckEligibilityAsync(campaignId, cancellationToken);
+        var data = apiResponse.Content?.Data;
+        return new CampaignEligibilityResponse(data?.IsEligible ?? false, data?.Reason);
     }
 }

@@ -52,6 +52,6 @@ public sealed class Donation
     {
         Status = DonationStatus.Failed;
         ProcessedAt = DateTime.UtcNow;
-        FailureReason = reason;
+        FailureReason = reason.Length <= 1000 ? reason : reason[..1000];
     }
 }

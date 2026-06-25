@@ -75,6 +75,22 @@ public static class DependencyInjection
         services.AddHealthChecks();
         services.AddRouting(options => options.LowercaseUrls = true);
 
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            {
+                var allowedOrigins = configuration
+                    .GetSection("Cors:AllowedOrigins")
+                    .Get<string[]>()
+                    ?? ["http://localhost:4200"];
+
+                policy
+                    .WithOrigins(allowedOrigins)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
+
         services.AddObservability(configuration);
         services.AddSerilogLogging();
 
@@ -86,6 +102,7 @@ public static class DependencyInjection
     {
         app.UseGlobalCorrelationId();
         app.UseCustomerExceptionHandler();
+        app.UseCors();
         app.UseSwagger();
         app.UseSwaggerUI();
         app.UseAuthentication();

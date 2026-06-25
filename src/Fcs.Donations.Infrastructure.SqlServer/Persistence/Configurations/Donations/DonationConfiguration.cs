@@ -16,7 +16,7 @@ public sealed class DonationConfiguration : IEntityTypeConfiguration<Donation>
         builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Property(x => x.CreatedAt).IsRequired();
         builder.Property(x => x.ProcessedAt);
-        builder.Property(x => x.FailureReason).HasMaxLength(500);
+        builder.Property(x => x.FailureReason).HasMaxLength(1000);
         builder.HasIndex(x => x.CampaignId);
         builder.HasIndex(x => x.DonorId);
     }
