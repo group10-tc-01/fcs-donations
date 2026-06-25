@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using Fcs.Donations.Domain.Results;
 using Fcs.Donations.Infrastructure.Http.CampaignEligibility;
+using Fcs.Donations.Messages;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Refit;
@@ -113,6 +114,62 @@ public sealed class CampaignEligibilityClientTests
 
         result.IsFailure.Should().BeTrue();
         result.Error.Type.Should().Be(ErrorType.ServiceUnavailable);
+    }
+
+    [Fact]
+    public async Task Given_SuccessEnvelopeWithSuccessFalse_When_CheckEligibility_Then_ShouldReturnValidationError()
+    {
+        const string json = """
+            {
+              "success": false,
+              "data": null,
+              "message": "Campaign eligibility request was rejected."
+            }
+            """;
+        var sut = CreateClient(HttpStatusCode.OK, json);
+
+        var result = await sut.CheckEligibilityAsync(Guid.NewGuid(), CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Type.Should().Be(ErrorType.Validation);
+        result.Error.Message.Should().Be("Campaign eligibility request was rejected.");
+    }
+
+    [Fact]
+    public async Task Given_HttpRequestException_When_CheckEligibility_Then_ShouldReturnServiceUnavailable()
+    {
+        var api = new ThrowingCampaignEligibilityApi(new HttpRequestException("Connection refused."));
+        var sut = new CampaignEligibilityClient(api, NullLogger<CampaignEligibilityClient>.Instance);
+
+        var result = await sut.CheckEligibilityAsync(Guid.NewGuid(), CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Type.Should().Be(ErrorType.ServiceUnavailable);
+    }
+
+    [Fact]
+    public async Task Given_InvalidJsonResponse_When_CheckEligibility_Then_ShouldReturnServiceUnavailable()
+    {
+        var api = new ThrowingCampaignEligibilityApi(new System.Text.Json.JsonException("Unexpected token."));
+        var sut = new CampaignEligibilityClient(api, NullLogger<CampaignEligibilityClient>.Instance);
+
+        var result = await sut.CheckEligibilityAsync(Guid.NewGuid(), CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Type.Should().Be(ErrorType.ServiceUnavailable);
+    }
+
+    [Fact]
+    public async Task Given_ApiExceptionWithNonJsonBody_When_CheckEligibility_Then_ShouldUseDefaultMessage()
+    {
+        const string nonJsonBody = "Bad Request";
+        var sut = CreateClient(HttpStatusCode.BadRequest, nonJsonBody);
+
+        var result = await sut.CheckEligibilityAsync(Guid.NewGuid(), CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Type.Should().Be(ErrorType.Validation);
+        result.Error.Message.Should().Be(Fcs.Donations.Messages.ResourceMessages.CampaignRequestRejected);
     }
 
     private static CampaignEligibilityClient CreateClient(HttpStatusCode statusCode, string content)

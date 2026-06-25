@@ -8,6 +8,8 @@ public sealed class InMemoryOutboxMessageRepository : IOutboxMessageRepository
 {
     private readonly List<OutboxMessage> _messages = new();
 
+    public IQueryable<OutboxMessage> Query() => _messages.AsQueryable();
+
     public Task AddAsync(OutboxMessage message, CancellationToken cancellationToken = default)
     {
         _messages.Add(message);
