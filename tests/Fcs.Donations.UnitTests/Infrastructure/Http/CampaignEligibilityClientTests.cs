@@ -136,6 +136,26 @@ public sealed class CampaignEligibilityClientTests
     }
 
     [Fact]
+    public async Task Given_SuccessFalseEnvelopeWithoutMessage_When_CheckEligibility_Then_ShouldUseDefaultRequestRejectedMessage()
+    {
+        const string json = """
+            {
+              "success": false,
+              "data": null,
+              "message": null
+            }
+            """;
+        var sut = CreateClient(HttpStatusCode.OK, json);
+
+        var result = await sut.CheckEligibilityAsync(Guid.NewGuid(), CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Type.Should().Be(ErrorType.Validation);
+        result.Error.Code.Should().Be(ResourceMessages.CampaignRequestRejectedCode);
+        result.Error.Message.Should().Be(ResourceMessages.CampaignRequestRejected);
+    }
+
+    [Fact]
     public async Task Given_HttpRequestException_When_CheckEligibility_Then_ShouldReturnServiceUnavailable()
     {
         var api = new ThrowingCampaignEligibilityApi(new HttpRequestException("Connection refused."));
@@ -170,6 +190,51 @@ public sealed class CampaignEligibilityClientTests
         result.IsFailure.Should().BeTrue();
         result.Error.Type.Should().Be(ErrorType.Validation);
         result.Error.Message.Should().Be(Fcs.Donations.Messages.ResourceMessages.CampaignRequestRejected);
+    }
+
+    [Fact]
+    public async Task Given_NotFoundWithoutBody_When_CheckEligibility_Then_ShouldUseDefaultNotFoundMessage()
+    {
+        var sut = CreateClient(HttpStatusCode.NotFound, string.Empty);
+
+        var result = await sut.CheckEligibilityAsync(Guid.NewGuid(), CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Type.Should().Be(ErrorType.NotFound);
+        result.Error.Code.Should().Be(ResourceMessages.CampaignNotFoundCode);
+        result.Error.Message.Should().Be(ResourceMessages.CampaignWasNotFound);
+    }
+
+    [Fact]
+    public async Task Given_ConflictWithoutMessage_When_CheckEligibility_Then_ShouldUseDefaultCampaignNotEligibleMessage()
+    {
+        const string json = """
+            {
+              "success": false,
+              "data": null,
+              "message": null
+            }
+            """;
+        var sut = CreateClient(HttpStatusCode.Conflict, json);
+
+        var result = await sut.CheckEligibilityAsync(Guid.NewGuid(), CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Type.Should().Be(ErrorType.Validation);
+        result.Error.Code.Should().Be(ResourceMessages.DonationCampaignNotEligibleCode);
+        result.Error.Message.Should().Be(ResourceMessages.CampaignNotEligible);
+    }
+
+    [Fact]
+    public async Task Given_UnmappedHttpFailure_When_CheckEligibility_Then_ShouldReturnServiceUnavailable()
+    {
+        var sut = CreateClient(HttpStatusCode.Unauthorized, string.Empty);
+
+        var result = await sut.CheckEligibilityAsync(Guid.NewGuid(), CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Type.Should().Be(ErrorType.ServiceUnavailable);
+        result.Error.Code.Should().Be(ResourceMessages.CampaignServiceUnavailableCode);
     }
 
     private static CampaignEligibilityClient CreateClient(HttpStatusCode statusCode, string content)
