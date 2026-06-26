@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Fcs.Donations.Application.Abstractions.ExternalServices;
+using Fcs.Donations.Domain.Results;
 
 namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 
@@ -7,9 +8,18 @@ namespace Fcs.Donations.CommomTestsUtilities.TestDoubles;
 public sealed class FakeCampaignEligibilityClient : ICampaignEligibilityClient
 {
     public bool IsEligible { get; set; } = true;
+    public Error? Error { get; set; }
 
-    public Task<CampaignEligibilityResponse> CheckEligibilityAsync(Guid campaignId, CancellationToken cancellationToken)
+    public Task<Result<CampaignEligibilityResponse>> CheckEligibilityAsync(
+        Guid campaignId,
+        CancellationToken cancellationToken)
     {
-        return Task.FromResult(new CampaignEligibilityResponse(IsEligible, IsEligible ? null : "Campaign is not eligible."));
+        var result = Error is null
+            ? Result<CampaignEligibilityResponse>.Success(new CampaignEligibilityResponse(
+                IsEligible,
+                IsEligible ? null : "Campaign is not eligible."))
+            : Result<CampaignEligibilityResponse>.Failure(Error);
+
+        return Task.FromResult(result);
     }
 }

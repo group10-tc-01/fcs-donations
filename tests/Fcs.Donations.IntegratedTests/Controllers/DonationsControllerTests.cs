@@ -5,6 +5,7 @@ using System.Text.Json;
 using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
 using Fcs.Donations.CommomTestsUtilities.Builders.Donations;
 using Fcs.Donations.Domain.Donations;
+using Fcs.Donations.Domain.Results;
 using Fcs.Donations.IntegratedTests.Configurations;
 using Fcs.Donations.WebApi.Models;
 using FluentAssertions;
@@ -20,6 +21,8 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
     {
         _factory = factory;
         _factory.DonationRepository.Clear();
+        _factory.CampaignClient.Error = null;
+        _factory.CampaignClient.IsEligible = true;
         _factory.CurrentUser.IsAuthenticated = true;
         _factory.CurrentUser.KeycloakUserId = Guid.NewGuid().ToString();
 
@@ -39,6 +42,50 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
         var payload = await response.Content.ReadFromJsonAsync<ApiResponse<CreateDonationResponse>>();
         payload.Should().NotBeNull();
         payload!.Data!.Id.Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public async Task Given_CampaignNotFound_When_PostIsCalled_Then_ShouldReturnNotFound()
+    {
+        _factory.CampaignClient.Error = Error.NotFound(
+            "Campaign.NotFound",
+            "Campaign was not found.");
+
+        var response = await _client.PostAsJsonAsync(
+            "/api/v1/donations",
+            new CreateDonationRequestBuilder().Build());
+
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        var payload = await response.Content.ReadFromJsonAsync<ApiResponse<string>>();
+        payload!.Message.Should().Be("Campaign was not found.");
+    }
+
+    [Fact]
+    public async Task Given_ClosedCampaign_When_PostIsCalled_Then_ShouldReturnBadRequest()
+    {
+        _factory.CampaignClient.IsEligible = false;
+
+        var response = await _client.PostAsJsonAsync(
+            "/api/v1/donations",
+            new CreateDonationRequestBuilder().Build());
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Given_CampaignServiceUnavailable_When_PostIsCalled_Then_ShouldReturnServiceUnavailable()
+    {
+        _factory.CampaignClient.Error = Error.ServiceUnavailable(
+            "Campaign.ServiceUnavailable",
+            "Campaign service is temporarily unavailable.");
+
+        var response = await _client.PostAsJsonAsync(
+            "/api/v1/donations",
+            new CreateDonationRequestBuilder().Build());
+
+        response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
+        var payload = await response.Content.ReadFromJsonAsync<ApiResponse<string>>();
+        payload!.Message.Should().Be("Campaign service is temporarily unavailable.");
     }
 
     [Fact]

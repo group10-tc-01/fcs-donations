@@ -30,7 +30,7 @@ public sealed class CreateDonationUseCaseTests
     }
 
     [Fact]
-    public async Task Given_CampaignNotEligible_When_Handle_Then_ShouldReturnConflictError()
+    public async Task Given_CampaignNotEligible_When_Handle_Then_ShouldReturnValidationError()
     {
         var donationRepo = new InMemoryDonationRepository();
         var outboxRepo = new InMemoryOutboxMessageRepository();
@@ -43,7 +43,32 @@ public sealed class CreateDonationUseCaseTests
         var result = await sut.Handle(request, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Type.Should().Be(ErrorType.Conflict);
+        result.Error.Type.Should().Be(ErrorType.Validation);
+    }
+
+    [Fact]
+    public async Task Given_CampaignServiceFailure_When_Handle_Then_ShouldPropagateError()
+    {
+        var donationRepo = new InMemoryDonationRepository();
+        var outboxRepo = new InMemoryOutboxMessageRepository();
+        var unitOfWork = new FakeUnitOfWork();
+        var campaignClient = new FakeCampaignEligibilityClient
+        {
+            Error = Error.ServiceUnavailable("Campaign.ServiceUnavailable", "Campaign service unavailable.")
+        };
+        var request = new CreateDonationRequestBuilder().Build();
+        var sut = new CreateDonationUseCase(
+            donationRepo,
+            outboxRepo,
+            unitOfWork,
+            campaignClient,
+            new FakeCurrentUser());
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Type.Should().Be(ErrorType.ServiceUnavailable);
+        unitOfWork.SaveChangesCalls.Should().Be(0);
     }
 
     [Fact]
@@ -102,5 +127,58 @@ public sealed class CreateDonationUseCaseTests
         result.IsFailure.Should().BeTrue();
         result.Error.Type.Should().Be(ErrorType.Validation);
         unitOfWork.SaveChangesCalls.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task Given_ValidRequest_When_Handle_Then_ShouldPersistOutboxMessage()
+    {
+        var donationRepo = new InMemoryDonationRepository();
+        var outboxRepo = new InMemoryOutboxMessageRepository();
+        var unitOfWork = new FakeUnitOfWork();
+        var campaignClient = new FakeCampaignEligibilityClient();
+        var currentUser = new FakeCurrentUser();
+        var request = new CreateDonationRequestBuilder().Build();
+        var sut = new CreateDonationUseCase(donationRepo, outboxRepo, unitOfWork, campaignClient, currentUser);
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        outboxRepo.Query().Should().ContainSingle(m => m.AggregateId == result.Value.Id);
+    }
+
+    [Fact]
+    public async Task Given_CampaignServiceFailure_When_Handle_Then_ShouldNotPersistDonation()
+    {
+        var donationRepo = new InMemoryDonationRepository();
+        var outboxRepo = new InMemoryOutboxMessageRepository();
+        var unitOfWork = new FakeUnitOfWork();
+        var campaignClient = new FakeCampaignEligibilityClient
+        {
+            Error = Error.ServiceUnavailable("Campaign.ServiceUnavailable", "Campaign service unavailable.")
+        };
+        var request = new CreateDonationRequestBuilder().Build();
+        var sut = new CreateDonationUseCase(donationRepo, outboxRepo, unitOfWork, campaignClient, new FakeCurrentUser());
+
+        await sut.Handle(request, CancellationToken.None);
+
+        donationRepo.Query().Should().BeEmpty();
+        outboxRepo.Query().Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Given_ValidRequest_When_Handle_Then_ShouldReturnCorrectCampaignId()
+    {
+        var donationRepo = new InMemoryDonationRepository();
+        var outboxRepo = new InMemoryOutboxMessageRepository();
+        var unitOfWork = new FakeUnitOfWork();
+        var campaignClient = new FakeCampaignEligibilityClient();
+        var currentUser = new FakeCurrentUser();
+        var request = new CreateDonationRequestBuilder().Build();
+        var sut = new CreateDonationUseCase(donationRepo, outboxRepo, unitOfWork, campaignClient, currentUser);
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.CampaignId.Should().Be(request.CampaignId);
     }
 }

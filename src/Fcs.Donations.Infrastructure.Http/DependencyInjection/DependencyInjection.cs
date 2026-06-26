@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fcs.Donations.Application.Abstractions.ExternalServices;
 using Fcs.Donations.Infrastructure.Http.CampaignEligibility;
 using Fcs.Donations.Infrastructure.Http.Settings;
@@ -10,6 +11,7 @@ using Refit;
 
 namespace Fcs.Donations.Infrastructure.Http.DependencyInjection;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInjection
 {
     public static IServiceCollection AddHttpInfrastructure(this IServiceCollection services, IConfiguration configuration)

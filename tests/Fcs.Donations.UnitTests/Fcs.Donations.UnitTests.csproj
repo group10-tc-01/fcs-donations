@@ -24,6 +24,7 @@
     <ProjectReference Include="..\..\src\Fcs.Donations.Application\Fcs.Donations.Application.csproj" />
     <ProjectReference Include="..\..\src\Fcs.Donations.Domain\Fcs.Donations.Domain.csproj" />
     <ProjectReference Include="..\..\src\Fcs.Donations.Infrastructure.SqlServer\Fcs.Donations.Infrastructure.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\Fcs.Donations.Infrastructure.Http\Fcs.Donations.Infrastructure.Http.csproj" />
     <ProjectReference Include="..\..\src\Fcs.Donations.Messages\Fcs.Donations.Messages.csproj" />
     <ProjectReference Include="..\Fcs.Donations.CommomTestsUtilities\Fcs.Donations.CommomTestsUtilities.csproj" />
   </ItemGroup>

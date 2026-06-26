@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Fcs.Donations.Infrastructure.Http.Settings;
 
+[ExcludeFromCodeCoverage]
 public sealed class CampaignApiOptions
 {
     public const string SectionName = "CampaignApi";
