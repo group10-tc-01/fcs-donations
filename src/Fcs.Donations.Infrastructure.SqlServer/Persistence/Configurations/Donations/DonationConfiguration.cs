@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Fcs.Donations.Domain.Donations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Configurations.Donations;
 
+[ExcludeFromCodeCoverage]
 public sealed class DonationConfiguration : IEntityTypeConfiguration<Donation>
 {
     public void Configure(EntityTypeBuilder<Donation> builder)
