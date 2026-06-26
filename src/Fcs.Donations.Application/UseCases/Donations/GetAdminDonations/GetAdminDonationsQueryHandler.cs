@@ -1,40 +1,25 @@
-using Fcs.Donations.Application.Abstractions.Authentication;
 using Fcs.Donations.Application.Abstractions.Messaging;
 using Fcs.Donations.Application.Common.Pagination;
+using Fcs.Donations.Application.UseCases.Donations.GetDonations;
 using Fcs.Donations.Domain.Donations;
 using Fcs.Donations.Domain.Results;
-using Fcs.Donations.Messages;
 
-namespace Fcs.Donations.Application.UseCases.Donations.GetDonations;
+namespace Fcs.Donations.Application.UseCases.Donations.GetAdminDonations;
 
-public sealed class GetDonationsQueryHandler : IQueryHandler<GetDonationsQuery, PagedResponse<DonationQueryResponse>>
+public sealed class GetAdminDonationsQueryHandler : IQueryHandler<GetAdminDonationsQuery, PagedResponse<DonationQueryResponse>>
 {
     private readonly IDonationRepository _donationRepository;
-    private readonly ICurrentUser _currentUser;
 
-    public GetDonationsQueryHandler(
-        IDonationRepository donationRepository,
-        ICurrentUser currentUser)
+    public GetAdminDonationsQueryHandler(IDonationRepository donationRepository)
     {
         _donationRepository = donationRepository;
-        _currentUser = currentUser;
     }
 
     public Task<Result<PagedResponse<DonationQueryResponse>>> Handle(
-        GetDonationsQuery request,
+        GetAdminDonationsQuery request,
         CancellationToken cancellationToken)
     {
-        if (!_currentUser.IsAuthenticated ||
-            !Guid.TryParse(_currentUser.KeycloakUserId, out var donorId))
-        {
-            return Task.FromResult<Result<PagedResponse<DonationQueryResponse>>>(
-                Error.Failure(
-                    ResourceMessages.DonationUnauthenticatedCode,
-                    ResourceMessages.DonationUnauthenticated));
-        }
-
-        var query = _donationRepository.Query()
-            .Where(donation => donation.DonorId == donorId);
+        var query = _donationRepository.Query();
 
         if (request.Status.HasValue)
         {
