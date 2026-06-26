@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -5,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Fcs.Donations.IntegratedTests.Configurations;
 
+[ExcludeFromCodeCoverage]
 public static class AuthTestHelper
 {
     public static string SecretKey { get; } = new('t', 40);

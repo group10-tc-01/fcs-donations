@@ -9,8 +9,6 @@ public sealed record CampaignEligibilityApiResponse(
     DonationEligibilityResponse? Data,
     string? Message);
 
-public sealed record CampaignEnvelope<T>(bool Success, T? Data, string? Message);
-
 public interface ICampaignEligibilityApi
 {
     [Get("/api/v1/internal/campaigns/{campaignId}/donation-eligibility")]

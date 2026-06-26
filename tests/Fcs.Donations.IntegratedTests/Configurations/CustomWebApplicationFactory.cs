@@ -18,10 +18,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Fcs.Donations.IntegratedTests.Configurations;
 
+[ExcludeFromCodeCoverage]
 public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
     public const string AuthenticationScheme = "Test";
