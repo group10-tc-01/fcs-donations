@@ -64,4 +64,76 @@ public sealed class GetAdminDonationsQueryHandlerTests
         result.Value.PageSize.Should().Be(2);
         result.Value.TotalCount.Should().Be(5);
     }
+
+    [Fact]
+    public async Task Given_StatusFilterFailed_When_Handle_Then_ShouldReturnOnlyFailedDonations()
+    {
+        var repository = new InMemoryDonationRepository();
+        var pending = Donation.Create(Guid.NewGuid(), Guid.NewGuid(), 100).Value;
+        var failed = Donation.Create(Guid.NewGuid(), Guid.NewGuid(), 200).Value;
+        failed.MarkFailed("timeout");
+        await repository.AddAsync(pending);
+        await repository.AddAsync(failed);
+        var sut = new GetAdminDonationsQueryHandler(repository);
+
+        var result = await sut.Handle(
+            new GetAdminDonationsQuery(Status: DonationStatus.Failed),
+            CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Items.Should().ContainSingle();
+        result.Value.Items.Single().Id.Should().Be(failed.Id);
+    }
+
+    [Fact]
+    public async Task Given_PageZero_When_Handle_Then_ShouldNormalizeToPageOne()
+    {
+        var repository = new InMemoryDonationRepository();
+        for (var i = 0; i < 3; i++)
+        {
+            var donation = Donation.Create(Guid.NewGuid(), Guid.NewGuid(), 50).Value;
+            await repository.AddAsync(donation);
+        }
+        var sut = new GetAdminDonationsQueryHandler(repository);
+
+        var result = await sut.Handle(new GetAdminDonationsQuery(Page: 0), CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Page.Should().Be(1);
+        result.Value.Items.Should().HaveCount(3);
+    }
+
+    [Fact]
+    public async Task Given_PageSizeZero_When_Handle_Then_ShouldNormalizeToDefault()
+    {
+        var repository = new InMemoryDonationRepository();
+        for (var i = 0; i < 3; i++)
+        {
+            var donation = Donation.Create(Guid.NewGuid(), Guid.NewGuid(), 50).Value;
+            await repository.AddAsync(donation);
+        }
+        var sut = new GetAdminDonationsQueryHandler(repository);
+
+        var result = await sut.Handle(new GetAdminDonationsQuery(PageSize: 0), CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.PageSize.Should().Be(10);
+    }
+
+    [Fact]
+    public async Task Given_PageSizeAboveMax_When_Handle_Then_ShouldNormalizeToDefault()
+    {
+        var repository = new InMemoryDonationRepository();
+        for (var i = 0; i < 3; i++)
+        {
+            var donation = Donation.Create(Guid.NewGuid(), Guid.NewGuid(), 50).Value;
+            await repository.AddAsync(donation);
+        }
+        var sut = new GetAdminDonationsQueryHandler(repository);
+
+        var result = await sut.Handle(new GetAdminDonationsQuery(PageSize: 101), CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.PageSize.Should().Be(10);
+    }
 }

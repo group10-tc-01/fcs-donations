@@ -40,29 +40,10 @@ public sealed class GetAdminDonationsQueryHandler : IQueryHandler<GetAdminDonati
             })
             .ToList();
 
-        var page = PagedResponse<DonationQueryResponse>.NormalizePage(request.Page);
-        var pageSize = PagedResponse<DonationQueryResponse>.NormalizePageSize(request.PageSize);
+        var paged = DonationSortHelper.ApplyPagination(
+            donations, request.Page, request.PageSize, request.SortBy, request.SortDescending);
 
-        var sorted = (request.SortBy?.ToLowerInvariant(), request.SortDescending) switch
-        {
-            ("amount", false) => donations.OrderBy(x => x.Amount),
-            ("amount", true) => donations.OrderByDescending(x => x.Amount),
-            ("status", false) => donations.OrderBy(x => x.Status),
-            ("status", true) => donations.OrderByDescending(x => x.Status),
-            ("createdat", false) => donations.OrderBy(x => x.CreatedAt),
-            ("createdat", true) => donations.OrderByDescending(x => x.CreatedAt),
-            (_, false) => donations.OrderBy(x => x.CreatedAt),
-            (_, true) => donations.OrderByDescending(x => x.CreatedAt)
-        };
-
-        var totalCount = sorted.Count();
-        var items = sorted
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
-
-        var result = Result<PagedResponse<DonationQueryResponse>>.Success(
-            new PagedResponse<DonationQueryResponse>(items, page, pageSize, totalCount));
+        var result = Result<PagedResponse<DonationQueryResponse>>.Success(paged);
 
         return Task.FromResult(result);
     }

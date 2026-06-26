@@ -29,16 +29,8 @@ public sealed class DonationsController : BaseApiController
         [FromQuery] bool sortDescending = true,
         CancellationToken cancellationToken = default)
     {
-        var parsedStatus = status?.ToLowerInvariant() switch
-        {
-            "pending" => Domain.Donations.DonationStatus.Pending,
-            "processed" => Domain.Donations.DonationStatus.Processed,
-            "failed" => Domain.Donations.DonationStatus.Failed,
-            _ => (Domain.Donations.DonationStatus?)null
-        };
-
         var result = await Mediator.Send(
-            new GetDonationsQuery(page, pageSize, parsedStatus, sortBy, sortDescending),
+            new GetDonationsQuery(page, pageSize, ParseStatus(status), sortBy, sortDescending),
             cancellationToken);
 
         if (result.IsFailure)
@@ -62,16 +54,8 @@ public sealed class DonationsController : BaseApiController
         [FromQuery] bool sortDescending = true,
         CancellationToken cancellationToken = default)
     {
-        var parsedStatus = status?.ToLowerInvariant() switch
-        {
-            "pending" => Domain.Donations.DonationStatus.Pending,
-            "processed" => Domain.Donations.DonationStatus.Processed,
-            "failed" => Domain.Donations.DonationStatus.Failed,
-            _ => (Domain.Donations.DonationStatus?)null
-        };
-
         var result = await Mediator.Send(
-            new GetAdminDonationsQuery(page, pageSize, parsedStatus, sortBy, sortDescending),
+            new GetAdminDonationsQuery(page, pageSize, ParseStatus(status), sortBy, sortDescending),
             cancellationToken);
 
         if (result.IsFailure)
@@ -101,5 +85,16 @@ public sealed class DonationsController : BaseApiController
         }
 
         return Accepted(ApiResponse<CreateDonationResponse>.FromSuccess(result.Value));
+    }
+
+    private static Domain.Donations.DonationStatus? ParseStatus(string? status)
+    {
+        return status?.ToLowerInvariant() switch
+        {
+            "pending" => Domain.Donations.DonationStatus.Pending,
+            "processed" => Domain.Donations.DonationStatus.Processed,
+            "failed" => Domain.Donations.DonationStatus.Failed,
+            _ => null
+        };
     }
 }
