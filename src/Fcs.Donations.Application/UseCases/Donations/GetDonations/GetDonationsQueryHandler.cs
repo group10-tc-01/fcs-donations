@@ -42,17 +42,7 @@ public sealed class GetDonationsQueryHandler : IQueryHandler<GetDonationsQuery, 
         }
 
         var donations = query
-            .Select(donation => new DonationQueryResponse
-            {
-                Id = donation.Id,
-                CampaignId = donation.CampaignId,
-                DonorId = donation.DonorId,
-                Amount = donation.Amount,
-                Status = donation.Status,
-                CreatedAt = donation.CreatedAt,
-                ProcessedAt = donation.ProcessedAt,
-                FailureReason = donation.FailureReason
-            })
+            .Select(DonationQueryResponse.FromDomain)
             .ToList();
 
         var paged = DonationSortHelper.ApplyPagination(

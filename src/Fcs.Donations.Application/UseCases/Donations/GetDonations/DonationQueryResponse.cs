@@ -1,9 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
 using Fcs.Donations.Domain.Donations;
 
 namespace Fcs.Donations.Application.UseCases.Donations.GetDonations;
 
-[ExcludeFromCodeCoverage]
 public sealed record DonationQueryResponse
 {
     public Guid Id { get; init; }
@@ -14,4 +12,16 @@ public sealed record DonationQueryResponse
     public DateTime CreatedAt { get; init; }
     public DateTime? ProcessedAt { get; init; }
     public string? FailureReason { get; init; }
+
+    public static DonationQueryResponse FromDomain(Donation donation) => new()
+    {
+        Id = donation.Id,
+        CampaignId = donation.CampaignId,
+        DonorId = donation.DonorId,
+        Amount = donation.Amount,
+        Status = donation.Status,
+        CreatedAt = donation.CreatedAt,
+        ProcessedAt = donation.ProcessedAt,
+        FailureReason = donation.FailureReason
+    };
 }
