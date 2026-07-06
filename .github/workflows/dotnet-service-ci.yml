@@ -1,4 +1,4 @@
-name: Fcs.Donations CI
+﻿name: Fcs.Donations CI
 
 on:
   pull_request:

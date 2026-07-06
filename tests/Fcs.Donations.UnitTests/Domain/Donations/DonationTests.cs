@@ -60,4 +60,16 @@ public sealed class DonationTests
         donation.Status.Should().Be(DonationStatus.Failed);
         donation.FailureReason.Should().Be("Insufficient funds");
     }
+
+    [Fact]
+    public void Given_LongFailureReason_When_MarkFailed_Then_ShouldTruncateTo1000()
+    {
+        var donation = Donation.Create(Guid.NewGuid(), Guid.NewGuid(), 50).Value;
+        var longReason = new string('x', 1500);
+
+        donation.MarkFailed(longReason);
+
+        donation.FailureReason.Should().HaveLength(1000);
+        donation.FailureReason.Should().Be(longReason[..1000]);
+    }
 }
