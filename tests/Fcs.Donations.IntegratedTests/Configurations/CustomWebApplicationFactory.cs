@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -18,7 +19,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Fcs.Donations.IntegratedTests.Configurations;

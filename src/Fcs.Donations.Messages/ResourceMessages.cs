@@ -8,6 +8,7 @@ public static class ResourceMessages
     public const string DonationInvalidAmountCode = "Donation.InvalidAmount";
     public const string DonationInvalidCampaignIdCode = "Donation.InvalidCampaignId";
     public const string DonationUnauthenticatedCode = "Donation.Unauthenticated";
+    public const string DonationNotFoundCode = "Donation.NotFound";
     public const string DonationCampaignNotEligibleCode = "Donation.CampaignNotEligible";
     public const string CampaignServiceUnavailableCode = "Campaign.ServiceUnavailable";
     public const string CampaignRequestRejectedCode = "Campaign.RequestRejected";

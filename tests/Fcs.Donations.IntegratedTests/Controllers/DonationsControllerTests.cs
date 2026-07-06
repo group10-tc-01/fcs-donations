@@ -7,7 +7,6 @@ using Fcs.Donations.CommomTestsUtilities.Builders.Donations;
 using Fcs.Donations.Domain.Donations;
 using Fcs.Donations.Domain.Results;
 using Fcs.Donations.IntegratedTests.Configurations;
-using Fcs.Donations.WebApi.Models;
 using FluentAssertions;
 
 namespace Fcs.Donations.IntegratedTests.Controllers;
@@ -162,6 +161,41 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
     }
 
     [Fact]
+    public async Task Given_OwnDonation_When_GetByIdIsCalled_Then_ShouldReturnDonation()
+    {
+        var loggedDonorId = Guid.Parse(_factory.CurrentUser.KeycloakUserId!);
+        var donation = Donation.Create(Guid.NewGuid(), loggedDonorId, 120).Value;
+        await _factory.DonationRepository.AddAsync(donation);
+
+        var response = await _client.GetAsync($"/api/v1/donations/{donation.Id}");
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var payload = await response.Content.ReadFromJsonAsync<ApiEnvelope<DonationItem>>(JsonOptions);
+        payload.Should().NotBeNull();
+        payload!.Data!.Id.Should().Be(donation.Id);
+        payload.Data.DonorId.Should().Be(loggedDonorId);
+    }
+
+    [Fact]
+    public async Task Given_DonationFromAnotherDonor_When_GetByIdIsCalled_Then_ShouldReturnNotFound()
+    {
+        var donation = Donation.Create(Guid.NewGuid(), Guid.NewGuid(), 120).Value;
+        await _factory.DonationRepository.AddAsync(donation);
+
+        var response = await _client.GetAsync($"/api/v1/donations/{donation.Id}");
+
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Given_MissingDonation_When_GetByIdIsCalled_Then_ShouldReturnNotFound()
+    {
+        var response = await _client.GetAsync($"/api/v1/donations/{Guid.NewGuid()}");
+
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
     public async Task Given_UnauthenticatedCurrentUser_When_GetIsCalled_Then_ShouldReturnUnauthorized()
     {
         _factory.CurrentUser.IsAuthenticated = false;
@@ -172,15 +206,7 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 
-    [Fact]
-    public async Task Given_DonorRole_When_GetAdminIsCalled_Then_ShouldReturnForbidden()
-    {
-        var response = await _client.GetAsync("/api/v1/donations/admin");
-
-        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-    }
-
-    public sealed class AdminEndpointTests : IClassFixture<CustomWebApplicationFactory>
+    public sealed class GestorONGListTests : IClassFixture<CustomWebApplicationFactory>
     {
         private readonly HttpClient _client;
         private readonly CustomWebApplicationFactory _factory;
@@ -189,7 +215,7 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
             PropertyNameCaseInsensitive = true
         };
 
-        public AdminEndpointTests(CustomWebApplicationFactory factory)
+        public GestorONGListTests(CustomWebApplicationFactory factory)
         {
             _factory = factory;
             _factory.DonationRepository.Clear();
@@ -203,7 +229,7 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
         }
 
         [Fact]
-        public async Task Given_GestorONGRole_When_GetAdminIsCalled_Then_ShouldReturnAllDonations()
+        public async Task Given_GestorONGRole_When_GetIsCalled_Then_ShouldReturnAllDonations()
         {
             var donorA = Guid.NewGuid();
             var donorB = Guid.NewGuid();
@@ -213,7 +239,7 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
             await _factory.DonationRepository.AddAsync(donationA);
             await _factory.DonationRepository.AddAsync(donationB);
 
-            var response = await _client.GetAsync("/api/v1/donations/admin");
+            var response = await _client.GetAsync("/api/v1/donations");
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var payload = await response.Content.ReadFromJsonAsync<ApiEnvelope<PagedData<DonationItem>>>(JsonOptions);
@@ -222,7 +248,7 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
         }
 
         [Fact]
-        public async Task Given_StatusFilter_When_GetAdminIsCalled_Then_ShouldReturnFilteredDonations()
+        public async Task Given_StatusFilter_When_GetIsCalledByGestorONG_Then_ShouldReturnFilteredDonations()
         {
             var donorId = Guid.NewGuid();
             var pending = Donation.Create(Guid.NewGuid(), donorId, 100).Value;
@@ -232,13 +258,27 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
             await _factory.DonationRepository.AddAsync(pending);
             await _factory.DonationRepository.AddAsync(processed);
 
-            var response = await _client.GetAsync("/api/v1/donations/admin?status=Pending");
+            var response = await _client.GetAsync("/api/v1/donations?status=Pending");
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var payload = await response.Content.ReadFromJsonAsync<ApiEnvelope<PagedData<DonationItem>>>(JsonOptions);
             payload.Should().NotBeNull();
             payload!.Data!.Items.Should().ContainSingle();
             payload.Data.Items.Single().Id.Should().Be(pending.Id);
+        }
+
+        [Fact]
+        public async Task Given_GestorONGRole_When_GetByIdIsCalled_Then_ShouldReturnAnyDonation()
+        {
+            var donation = Donation.Create(Guid.NewGuid(), Guid.NewGuid(), 100).Value;
+            await _factory.DonationRepository.AddAsync(donation);
+
+            var response = await _client.GetAsync($"/api/v1/donations/{donation.Id}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var payload = await response.Content.ReadFromJsonAsync<ApiEnvelope<DonationItem>>(JsonOptions);
+            payload.Should().NotBeNull();
+            payload!.Data!.Id.Should().Be(donation.Id);
         }
     }
 

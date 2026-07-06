@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace Fcs.Donations.WebApi.Swagger;
 
@@ -27,6 +27,7 @@ public static class SwaggerDependencyInjection
             });
 
             options.OperationFilter<SwaggerAuthorizationOperationFilter>();
+            options.OperationFilter<SwaggerEndpointDocumentationOperationFilter>();
         });
 
         return services;

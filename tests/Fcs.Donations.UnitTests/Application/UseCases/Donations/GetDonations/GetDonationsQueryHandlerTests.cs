@@ -30,6 +30,27 @@ public sealed class GetDonationsQueryHandlerTests
     }
 
     [Fact]
+    public async Task Given_GestorONG_When_Handle_Then_ShouldReturnAllDonations()
+    {
+        var repository = new InMemoryDonationRepository();
+        var currentUser = new FakeCurrentUser { Roles = ["GestorONG"] };
+        var donationA = Donation.Create(Guid.NewGuid(), Guid.NewGuid(), 125).Value;
+        var donationB = Donation.Create(Guid.NewGuid(), Guid.NewGuid(), 300).Value;
+        await repository.AddAsync(donationA);
+        await repository.AddAsync(donationB);
+        var sut = new GetDonationsQueryHandler(repository, currentUser);
+
+        var result = await sut.Handle(new GetDonationsQuery(), CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Items.Should().HaveCount(2);
+        result.Value.Items.Select(donation => donation.Id)
+            .Should()
+            .BeEquivalentTo([donationA.Id, donationB.Id]);
+        result.Value.TotalCount.Should().Be(2);
+    }
+
+    [Fact]
     public async Task Given_UnauthenticatedCurrentUser_When_Handle_Then_ShouldReturnFailure()
     {
         var currentUser = new FakeCurrentUser

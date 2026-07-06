@@ -51,6 +51,44 @@ public sealed class OperationalEndpointsTests : IClassFixture<CustomWebApplicati
     }
 
     [Fact]
+    public async Task Given_SwaggerDocument_When_Requested_Then_ShouldDocumentDonationEndpointsWithExamples()
+    {
+        var response = await _client.GetAsync("/swagger/v1/swagger.json");
+        var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var paths = document.RootElement.GetProperty("paths");
+        var createDonation = paths.GetProperty("/api/v1/donations").GetProperty("post");
+        var listDonations = paths.GetProperty("/api/v1/donations").GetProperty("get");
+        var getDonationById = paths.GetProperty("/api/v1/donations/{id}").GetProperty("get");
+
+        createDonation.GetProperty("summary").GetString().Should().Be("Criar intencao de doacao");
+        createDonation
+            .GetProperty("requestBody")
+            .GetProperty("content")
+            .GetProperty("application/json")
+            .GetProperty("example")
+            .GetProperty("campaignId")
+            .GetString()
+            .Should()
+            .NotBeNullOrWhiteSpace();
+        createDonation
+            .GetProperty("responses")
+            .GetProperty("202")
+            .GetProperty("content")
+            .GetProperty("application/json")
+            .GetProperty("example")
+            .GetProperty("success")
+            .GetBoolean()
+            .Should()
+            .BeTrue();
+
+        listDonations.GetProperty("summary").GetString().Should().Be("Listar doacoes");
+        getDonationById.GetProperty("summary").GetString().Should().Be("Consultar doacao");
+    }
+
+    [Fact]
     public async Task Given_TestEnvironment_When_ApplicationStarts_Then_ShouldNotApplyMigrations()
     {
         var response = await _client.GetAsync("/swagger/v1/swagger.json");
