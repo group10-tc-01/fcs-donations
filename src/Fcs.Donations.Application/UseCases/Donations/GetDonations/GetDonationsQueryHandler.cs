@@ -24,8 +24,7 @@ public sealed class GetDonationsQueryHandler : IQueryHandler<GetDonationsQuery, 
         GetDonationsQuery request,
         CancellationToken cancellationToken)
     {
-        if (!_currentUser.IsAuthenticated ||
-            !Guid.TryParse(_currentUser.KeycloakUserId, out var donorId))
+        if (!_currentUser.IsAuthenticated)
         {
             return Task.FromResult<Result<PagedResponse<DonationQueryResponse>>>(
                 Error.Failure(
@@ -33,8 +32,20 @@ public sealed class GetDonationsQueryHandler : IQueryHandler<GetDonationsQuery, 
                     ResourceMessages.DonationUnauthenticated));
         }
 
-        var query = _donationRepository.Query()
-            .Where(donation => donation.DonorId == donorId);
+        var query = _donationRepository.Query();
+
+        if (!_currentUser.Roles.Contains("GestorONG"))
+        {
+            if (!Guid.TryParse(_currentUser.KeycloakUserId, out var donorId))
+            {
+                return Task.FromResult<Result<PagedResponse<DonationQueryResponse>>>(
+                    Error.Failure(
+                        ResourceMessages.DonationUnauthenticatedCode,
+                        ResourceMessages.DonationUnauthenticated));
+            }
+
+            query = query.Where(donation => donation.DonorId == donorId);
+        }
 
         if (request.Status.HasValue)
         {

@@ -27,6 +27,7 @@ public static class SwaggerDependencyInjection
             });
 
             options.OperationFilter<SwaggerAuthorizationOperationFilter>();
+            options.OperationFilter<SwaggerEndpointDocumentationOperationFilter>();
         });
 
         return services;
