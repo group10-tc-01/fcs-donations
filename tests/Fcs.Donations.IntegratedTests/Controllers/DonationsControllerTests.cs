@@ -16,6 +16,10 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
 {
     private readonly HttpClient _client;
     private readonly CustomWebApplicationFactory _factory;
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
     public DonationsControllerTests(CustomWebApplicationFactory factory)
     {
@@ -39,7 +43,7 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
         var response = await _client.PostAsJsonAsync("/api/v1/donations", request);
 
         response.StatusCode.Should().Be(HttpStatusCode.Accepted);
-        var payload = await response.Content.ReadFromJsonAsync<ApiResponse<CreateDonationResponse>>();
+        var payload = await response.Content.ReadFromJsonAsync<ApiEnvelope<CreateDonationResponse>>(JsonOptions);
         payload.Should().NotBeNull();
         payload!.Data!.Id.Should().NotBeEmpty();
     }
@@ -56,7 +60,7 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
             new CreateDonationRequestBuilder().Build());
 
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        var payload = await response.Content.ReadFromJsonAsync<ApiResponse<string>>();
+        var payload = await response.Content.ReadFromJsonAsync<ApiEnvelope<string>>(JsonOptions);
         payload!.Message.Should().Be("Campaign was not found.");
     }
 
@@ -84,7 +88,7 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
             new CreateDonationRequestBuilder().Build());
 
         response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
-        var payload = await response.Content.ReadFromJsonAsync<ApiResponse<string>>();
+        var payload = await response.Content.ReadFromJsonAsync<ApiEnvelope<string>>(JsonOptions);
         payload!.Message.Should().Be("Campaign service is temporarily unavailable.");
     }
 
@@ -102,37 +106,59 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
         var response = await _client.GetAsync("/api/v1/donations");
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var json = await response.Content.ReadAsStringAsync();
-        using var document = JsonDocument.Parse(json);
-        var donations = GetDonationArray(document);
-
-        donations.GetArrayLength().Should().Be(1);
-        donations[0].GetProperty("id").GetGuid().Should().Be(expectedDonation.Id);
-        donations[0].GetProperty("donorId").GetGuid().Should().Be(loggedDonorId);
+        var payload = await response.Content.ReadFromJsonAsync<ApiEnvelope<PagedData<DonationItem>>>(JsonOptions);
+        payload.Should().NotBeNull();
+        payload!.Success.Should().BeTrue();
+        payload.Data.Should().NotBeNull();
+        payload.Data!.Items.Should().ContainSingle();
+        payload.Data.Items.Single().Id.Should().Be(expectedDonation.Id);
+        payload.Data.Items.Single().DonorId.Should().Be(loggedDonorId);
+        payload.Data.Page.Should().Be(1);
+        payload.Data.TotalCount.Should().Be(1);
     }
 
     [Fact]
-    public async Task Given_ODataQuery_When_GetIsCalled_Then_ShouldApplyFilterOrderAndTop()
+    public async Task Given_MultipleDonations_When_GetIsCalledWithPagination_Then_ShouldReturnCorrectPage()
     {
         var loggedDonorId = Guid.Parse(_factory.CurrentUser.KeycloakUserId!);
-        var lowerDonation = Donation.Create(Guid.NewGuid(), loggedDonorId, 50).Value;
-        var middleDonation = Donation.Create(Guid.NewGuid(), loggedDonorId, 150).Value;
-        var higherDonation = Donation.Create(Guid.NewGuid(), loggedDonorId, 250).Value;
+        for (var i = 0; i < 5; i++)
+        {
+            var donation = Donation.Create(Guid.NewGuid(), loggedDonorId, 50 * (i + 1)).Value;
+            await _factory.DonationRepository.AddAsync(donation);
+        }
 
-        await _factory.DonationRepository.AddAsync(lowerDonation);
-        await _factory.DonationRepository.AddAsync(middleDonation);
-        await _factory.DonationRepository.AddAsync(higherDonation);
-
-        var response = await _client.GetAsync("/api/v1/donations?$filter=Amount gt 100&$orderby=Amount desc&$top=1");
+        var response = await _client.GetAsync("/api/v1/donations?page=1&pageSize=2");
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var json = await response.Content.ReadAsStringAsync();
-        using var document = JsonDocument.Parse(json);
-        var donations = GetDonationArray(document);
+        var payload = await response.Content.ReadFromJsonAsync<ApiEnvelope<PagedData<DonationItem>>>(JsonOptions);
+        payload.Should().NotBeNull();
+        payload!.Data!.Items.Count.Should().Be(2);
+        payload.Data.Page.Should().Be(1);
+        payload.Data.PageSize.Should().Be(2);
+        payload.Data.TotalCount.Should().Be(5);
+    }
 
-        donations.GetArrayLength().Should().Be(1);
-        donations[0].GetProperty("id").GetGuid().Should().Be(higherDonation.Id);
-        donations[0].GetProperty("amount").GetDecimal().Should().Be(250);
+    [Fact]
+    public async Task Given_StatusFilter_When_GetIsCalled_Then_ShouldReturnFilteredDonations()
+    {
+        var loggedDonorId = Guid.Parse(_factory.CurrentUser.KeycloakUserId!);
+        var pending = Donation.Create(Guid.NewGuid(), loggedDonorId, 100).Value;
+        var processed = Donation.Create(Guid.NewGuid(), loggedDonorId, 200).Value;
+        processed.MarkProcessed();
+        var failed = Donation.Create(Guid.NewGuid(), loggedDonorId, 300).Value;
+        failed.MarkFailed("error");
+
+        await _factory.DonationRepository.AddAsync(pending);
+        await _factory.DonationRepository.AddAsync(processed);
+        await _factory.DonationRepository.AddAsync(failed);
+
+        var response = await _client.GetAsync("/api/v1/donations?status=Processed");
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var payload = await response.Content.ReadFromJsonAsync<ApiEnvelope<PagedData<DonationItem>>>(JsonOptions);
+        payload.Should().NotBeNull();
+        payload!.Data!.Items.Should().ContainSingle();
+        payload.Data.Items.Single().Id.Should().Be(processed.Id);
     }
 
     [Fact]
@@ -146,12 +172,100 @@ public sealed class DonationsControllerTests : IClassFixture<CustomWebApplicatio
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 
-    private static JsonElement GetDonationArray(JsonDocument document)
+    [Fact]
+    public async Task Given_DonorRole_When_GetAdminIsCalled_Then_ShouldReturnForbidden()
     {
-        var root = document.RootElement;
+        var response = await _client.GetAsync("/api/v1/donations/admin");
 
-        return root.ValueKind == JsonValueKind.Array
-            ? root
-            : root.GetProperty("value");
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+
+    public sealed class AdminEndpointTests : IClassFixture<CustomWebApplicationFactory>
+    {
+        private readonly HttpClient _client;
+        private readonly CustomWebApplicationFactory _factory;
+        private static readonly JsonSerializerOptions JsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        public AdminEndpointTests(CustomWebApplicationFactory factory)
+        {
+            _factory = factory;
+            _factory.DonationRepository.Clear();
+            _factory.CurrentUser.IsAuthenticated = true;
+            _factory.CurrentUser.KeycloakUserId = Guid.NewGuid().ToString();
+            _factory.CurrentUser.Roles = ["GestorONG"];
+
+            _client = factory.CreateClient();
+            _client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", AuthTestHelper.GenerateToken("GestorONG"));
+        }
+
+        [Fact]
+        public async Task Given_GestorONGRole_When_GetAdminIsCalled_Then_ShouldReturnAllDonations()
+        {
+            var donorA = Guid.NewGuid();
+            var donorB = Guid.NewGuid();
+            var donationA = Donation.Create(Guid.NewGuid(), donorA, 100).Value;
+            var donationB = Donation.Create(Guid.NewGuid(), donorB, 200).Value;
+
+            await _factory.DonationRepository.AddAsync(donationA);
+            await _factory.DonationRepository.AddAsync(donationB);
+
+            var response = await _client.GetAsync("/api/v1/donations/admin");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var payload = await response.Content.ReadFromJsonAsync<ApiEnvelope<PagedData<DonationItem>>>(JsonOptions);
+            payload.Should().NotBeNull();
+            payload!.Data!.Items.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public async Task Given_StatusFilter_When_GetAdminIsCalled_Then_ShouldReturnFilteredDonations()
+        {
+            var donorId = Guid.NewGuid();
+            var pending = Donation.Create(Guid.NewGuid(), donorId, 100).Value;
+            var processed = Donation.Create(Guid.NewGuid(), donorId, 200).Value;
+            processed.MarkProcessed();
+
+            await _factory.DonationRepository.AddAsync(pending);
+            await _factory.DonationRepository.AddAsync(processed);
+
+            var response = await _client.GetAsync("/api/v1/donations/admin?status=Pending");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var payload = await response.Content.ReadFromJsonAsync<ApiEnvelope<PagedData<DonationItem>>>(JsonOptions);
+            payload.Should().NotBeNull();
+            payload!.Data!.Items.Should().ContainSingle();
+            payload.Data.Items.Single().Id.Should().Be(pending.Id);
+        }
+    }
+
+    private sealed class ApiEnvelope<T>
+    {
+        public bool Success { get; set; }
+        public T? Data { get; set; }
+        public string? Message { get; set; }
+    }
+
+    private sealed class PagedData<T>
+    {
+        public List<T> Items { get; set; } = [];
+        public int Page { get; set; }
+        public int PageSize { get; set; }
+        public int TotalCount { get; set; }
+    }
+
+    private sealed class DonationItem
+    {
+        public Guid Id { get; set; }
+        public Guid CampaignId { get; set; }
+        public Guid DonorId { get; set; }
+        public decimal Amount { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public DateTime? ProcessedAt { get; set; }
+        public string? FailureReason { get; set; }
     }
 }

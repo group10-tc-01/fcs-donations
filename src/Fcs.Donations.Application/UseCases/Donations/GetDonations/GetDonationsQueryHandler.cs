@@ -1,12 +1,13 @@
 using Fcs.Donations.Application.Abstractions.Authentication;
 using Fcs.Donations.Application.Abstractions.Messaging;
+using Fcs.Donations.Application.Common.Pagination;
 using Fcs.Donations.Domain.Donations;
 using Fcs.Donations.Domain.Results;
 using Fcs.Donations.Messages;
 
 namespace Fcs.Donations.Application.UseCases.Donations.GetDonations;
 
-public sealed class GetDonationsQueryHandler : IQueryHandler<GetDonationsQuery, IQueryable<DonationQueryResponse>>
+public sealed class GetDonationsQueryHandler : IQueryHandler<GetDonationsQuery, PagedResponse<DonationQueryResponse>>
 {
     private readonly IDonationRepository _donationRepository;
     private readonly ICurrentUser _currentUser;
@@ -19,34 +20,36 @@ public sealed class GetDonationsQueryHandler : IQueryHandler<GetDonationsQuery, 
         _currentUser = currentUser;
     }
 
-    public Task<Result<IQueryable<DonationQueryResponse>>> Handle(
+    public Task<Result<PagedResponse<DonationQueryResponse>>> Handle(
         GetDonationsQuery request,
         CancellationToken cancellationToken)
     {
         if (!_currentUser.IsAuthenticated ||
             !Guid.TryParse(_currentUser.KeycloakUserId, out var donorId))
         {
-            return Task.FromResult<Result<IQueryable<DonationQueryResponse>>>(
+            return Task.FromResult<Result<PagedResponse<DonationQueryResponse>>>(
                 Error.Failure(
                     ResourceMessages.DonationUnauthenticatedCode,
                     ResourceMessages.DonationUnauthenticated));
         }
 
-        var donations = _donationRepository.Query()
-            .Where(donation => donation.DonorId == donorId)
-            .Select(donation => new DonationQueryResponse
-            {
-                Id = donation.Id,
-                CampaignId = donation.CampaignId,
-                DonorId = donation.DonorId,
-                Amount = donation.Amount,
-                Status = donation.Status,
-                CreatedAt = donation.CreatedAt,
-                ProcessedAt = donation.ProcessedAt,
-                FailureReason = donation.FailureReason
-            });
+        var query = _donationRepository.Query()
+            .Where(donation => donation.DonorId == donorId);
 
-        var result = Result<IQueryable<DonationQueryResponse>>.Success(donations);
+        if (request.Status.HasValue)
+        {
+            query = query.Where(d => d.Status == request.Status.Value);
+        }
+
+        var donations = query
+            .Select(DonationQueryResponse.FromDomain)
+            .ToList();
+
+        var paged = DonationSortHelper.ApplyPagination(
+            donations, request.Page, request.PageSize, request.SortBy, request.SortDescending);
+
+        var result = Result<PagedResponse<DonationQueryResponse>>.Success(paged);
+
         return Task.FromResult(result);
     }
 }
