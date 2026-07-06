@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace Fcs.Donations.WebApi.Swagger;
 

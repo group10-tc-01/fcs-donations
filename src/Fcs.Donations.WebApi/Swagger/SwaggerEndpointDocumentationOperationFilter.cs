@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Fcs.Donations.WebApi.Swagger;
@@ -81,6 +81,11 @@ public sealed class SwaggerEndpointDocumentationOperationFilter : IOperationFilt
         OpenApiOperation operation,
         IReadOnlyDictionary<string, ResponseDocumentation> responses)
     {
+        if (operation.Responses is null)
+        {
+            return;
+        }
+
         foreach (var (statusCode, documentation) in responses)
         {
             if (!operation.Responses.TryGetValue(statusCode, out var response))
@@ -90,7 +95,9 @@ public sealed class SwaggerEndpointDocumentationOperationFilter : IOperationFilt
 
             response.Description = documentation.Description;
 
-            if (documentation.Example is not null && response.Content.TryGetValue(SwaggerConstants.JsonContentType, out var mediaType))
+            if (documentation.Example is not null &&
+                response.Content is not null &&
+                response.Content.TryGetValue(SwaggerConstants.JsonContentType, out var mediaType))
             {
                 mediaType.Example = OpenApiExampleFactory.Create(documentation.Example);
             }
