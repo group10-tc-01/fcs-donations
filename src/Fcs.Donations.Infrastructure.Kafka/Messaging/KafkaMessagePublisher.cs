@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace Fcs.Donations.Infrastructure.Kafka.Messaging;
 
-public sealed class KafkaMessagePublisher : IMessagePublisher, IDisposable
+public sealed class KafkaMessagePublisher : IMessagePublisher, IOutboxMessagePublisher, IDisposable
 {
     private readonly IProducer<Null, string> _producer;
     private readonly string _topicName;

@@ -1,4 +1,3 @@
-using Fcs.Donations.Domain.OutboxMessages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -28,26 +27,8 @@ public sealed class OutboxPublisher : BackgroundService
             try
             {
                 using var scope = _scopeFactory.CreateScope();
-                var repository = scope.ServiceProvider.GetRequiredService<IOutboxMessageRepository>();
-                var kafkaPublisher = scope.ServiceProvider.GetRequiredService<KafkaMessagePublisher>();
-
-                var pending = await repository.GetPendingAsync(BatchSize, stoppingToken);
-
-                foreach (var message in pending)
-                {
-                    try
-                    {
-                        await kafkaPublisher.PublishRawAsync(message.Payload, stoppingToken);
-                        message.MarkPublished();
-                        await repository.UpdateAsync(message, stoppingToken);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Failed to publish outbox message {MessageId}", message.Id);
-                        message.MarkFailed(ex.Message);
-                        await repository.UpdateAsync(message, stoppingToken);
-                    }
-                }
+                var processor = scope.ServiceProvider.GetRequiredService<OutboxMessageProcessor>();
+                await processor.ProcessPendingAsync(BatchSize, stoppingToken);
             }
             catch (Exception ex)
             {
