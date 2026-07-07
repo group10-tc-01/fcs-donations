@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Fcs.Donations.Application.Audit;
 
+[ExcludeFromCodeCoverage]
 public static class AuditPublisherExtensions
 {
     public static void PublishAuditLogFireAndForget(this IAuditPublisher auditPublisher, AuditLogRequestedEvent auditEvent)

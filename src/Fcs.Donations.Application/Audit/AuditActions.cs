@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Fcs.Donations.Application.Audit;
 
+[ExcludeFromCodeCoverage]
 public static class AuditActions
 {
     public const string DonationRequested = nameof(DonationRequested);

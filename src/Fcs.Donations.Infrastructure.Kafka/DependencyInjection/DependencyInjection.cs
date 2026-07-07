@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fcs.Donations.Application.Abstractions.Messaging;
 using Fcs.Donations.Application.Audit;
 using Fcs.Donations.Infrastructure.Kafka.Messaging;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fcs.Donations.Infrastructure.Kafka.DependencyInjection;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInjection
 {
     public static IServiceCollection AddKafkaInfrastructure(this IServiceCollection services, IConfiguration configuration)

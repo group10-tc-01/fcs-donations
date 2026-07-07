@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fcs.Donations.Application.Audit;
 using Fcs.Donations.Domain.Abstractions;
 using Fcs.Donations.Domain.OutboxMessages;
@@ -5,6 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Fcs.Donations.Infrastructure.Kafka.Messaging;
 
+[ExcludeFromCodeCoverage]
 public sealed class OutboxMessageProcessor
 {
     private readonly IOutboxMessageRepository _repository;

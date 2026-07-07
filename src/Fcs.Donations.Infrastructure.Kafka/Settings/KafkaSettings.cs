@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Fcs.Donations.Infrastructure.Kafka.Settings;
 
+[ExcludeFromCodeCoverage]
 public sealed class KafkaSettings
 {
     public const string SectionName = "KafkaSettings";
