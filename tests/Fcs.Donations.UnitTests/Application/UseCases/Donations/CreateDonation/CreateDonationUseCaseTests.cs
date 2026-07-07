@@ -1,3 +1,4 @@
+using Fcs.Donations.Application.Audit;
 using Fcs.Donations.Application.UseCases.Donations.CreateDonation;
 using Fcs.Donations.CommomTestsUtilities.Builders.Donations;
 using Fcs.Donations.CommomTestsUtilities.TestDoubles;
@@ -180,5 +181,50 @@ public sealed class CreateDonationUseCaseTests
 
         result.IsSuccess.Should().BeTrue();
         result.Value.CampaignId.Should().Be(request.CampaignId);
+    }
+
+    [Fact]
+    public async Task Given_ValidRequest_When_Handle_Then_ShouldPublishDonationRequestedAndEventQueuedAudits()
+    {
+        var donationRepo = new InMemoryDonationRepository();
+        var outboxRepo = new InMemoryOutboxMessageRepository();
+        var unitOfWork = new FakeUnitOfWork();
+        var campaignClient = new FakeCampaignEligibilityClient();
+        var currentUser = new FakeCurrentUser();
+        var auditPublisher = new FakeAuditPublisher();
+        var request = new CreateDonationRequestBuilder().Build();
+        var sut = new CreateDonationUseCase(donationRepo, outboxRepo, unitOfWork, campaignClient, currentUser, auditPublisher);
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        auditPublisher.Events.Should().Contain(e =>
+            e.Action == AuditActions.DonationRequested &&
+            e.EntityName == "Donation" &&
+            e.EntityId == result.Value.Id.ToString());
+        auditPublisher.Events.Should().Contain(e =>
+            e.Action == AuditActions.DonationEventQueued &&
+            e.EntityName == "OutboxMessage");
+    }
+
+    [Fact]
+    public async Task Given_CampaignNotEligible_When_Handle_Then_ShouldPublishDonationRejectedAudit()
+    {
+        var donationRepo = new InMemoryDonationRepository();
+        var outboxRepo = new InMemoryOutboxMessageRepository();
+        var unitOfWork = new FakeUnitOfWork();
+        var campaignClient = new FakeCampaignEligibilityClient { IsEligible = false };
+        var currentUser = new FakeCurrentUser();
+        var auditPublisher = new FakeAuditPublisher();
+        var request = new CreateDonationRequestBuilder().Build();
+        var sut = new CreateDonationUseCase(donationRepo, outboxRepo, unitOfWork, campaignClient, currentUser, auditPublisher);
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        var auditEvent = auditPublisher.Events.Should().ContainSingle(e => e.Action == AuditActions.DonationRejected).Subject;
+        auditEvent.EntityName.Should().Be("Donation");
+        auditEvent.ActorType.Should().Be("Doador");
+        auditEvent.Metadata.Should().Contain(pair => pair.Key == "reason");
     }
 }
