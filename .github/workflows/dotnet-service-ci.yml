@@ -10,7 +10,9 @@ on:
       - Directory.Packages.props
       - .editorconfig
       - docker-compose.yml
+      - k8s/**
       - .github/workflows/dotnet-service-ci.yml
+      - .github/workflows/dotnet-service-delivery.yml
   push:
     branches: [main]
     paths:
@@ -20,7 +22,9 @@ on:
       - Directory.Packages.props
       - .editorconfig
       - docker-compose.yml
+      - k8s/**
       - .github/workflows/dotnet-service-ci.yml
+      - .github/workflows/dotnet-service-delivery.yml
   workflow_dispatch:
 
 permissions:
