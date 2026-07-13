@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: donations-config
+  namespace: fcs-donations
+data:
+  ASPNETCORE_ENVIRONMENT: Production
+  ASPNETCORE_URLS: http://+:8080
+  HttpsRedirection__Enabled: "false"
+  Database__ApplyMigrations: "true"
+  KafkaSettings__BootstrapServers: kafka-service.fcs-infra.svc.cluster.local:29092
+  KafkaSettings__TopicName: donation-received
+  KafkaSettings__AuditTopicName: audit-log-requested
+  CampaignApi__BaseUrl: http://fcs-campaign-service.fcs-campaigns.svc.cluster.local:8080/
+  CampaignApi__TimeoutSeconds: "10"
+  CampaignApi__Retry__Attempts: "3"
+  CampaignApi__Retry__BaseDelayMilliseconds: "200"
+  Keycloak__Authority: http://keycloak-service.fcs-infra.svc.cluster.local:8080/realms/conexao-solidaria
+  Keycloak__Audience: solidarity-api
+  Cors__AllowedOrigins__0: https://fcs-web.flaviojcf.com.br
+  Observability__ServiceName: Fcs.Donations
+  Observability__EnableOtlpExporter: "false"

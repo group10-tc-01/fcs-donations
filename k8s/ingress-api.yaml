@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fcs-donations-api
+  namespace: fcs-donations
+spec:
+  ingressClassName: fcs-traefik
+  tls:
+    - hosts:
+        - fcs-donations.flaviojcf.com.br
+      secretName: fcs-donations-tls
+  rules:
+    - host: fcs-donations.flaviojcf.com.br
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: fcs-donations-service
+                port:
+                  number: 8080

@@ -1,4 +1,4 @@
-name: Fcs.Donations Delivery To AKS
+name: Fcs.Donations Delivery To K3s
 
 on:
   workflow_run:
@@ -9,24 +9,21 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   deploy:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
-    uses: group10-tc-01/fcs-pipelines/.github/workflows/dotnet-service-delivery.yml@main
+    uses: group10-tc-01/fcs-pipelines/.github/workflows/k3s-service-delivery.yml@main
     with:
       service_name: fcs-donations
-      image_name: fcs-donations
-      dockerfile_path: src/Fcs.Donations.WebApi/Dockerfile
-      docker_context: .
-      azure_container_registry_name: ${{ vars.AZURE_CONTAINER_REGISTRY_NAME }}
-      aks_resource_group: ${{ vars.AKS_RESOURCE_GROUP }}
-      aks_cluster_name: ${{ vars.AKS_CLUSTER_NAME }}
+      image_repository: ghcr.io/group10-tc-01/fcs-donations
+      source_ref: ${{ github.event_name == 'workflow_dispatch' && github.sha || github.event.workflow_run.head_sha }}
       k8s_namespace: fcs-donations
       k8s_deployment_name: fcs-donations
-      k8s_container_name: fcs-donations
-      k8s_manifests_path: ""
+      k8s_container_name: api
+      k8s_manifest_path: k8s
+      k8s_apply_mode: kustomize
+      vps_host: ${{ vars.VPS_HOST }}
+      vps_deploy_user: ${{ vars.VPS_DEPLOY_USER }}
       environment: production
-      healthcheck_url: ""
     secrets: inherit
