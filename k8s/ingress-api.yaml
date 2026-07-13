@@ -20,3 +20,24 @@ spec:
                 name: fcs-donations-service
                 port:
                   number: 8080
+          - path: /swagger
+            pathType: Prefix
+            backend:
+              service:
+                name: fcs-donations-service
+                port:
+                  number: 8080
+          - path: /health
+            pathType: Prefix
+            backend:
+              service:
+                name: fcs-donations-service
+                port:
+                  number: 8080
+          - path: /metrics
+            pathType: Prefix
+            backend:
+              service:
+                name: fcs-donations-service
+                port:
+                  number: 8080
