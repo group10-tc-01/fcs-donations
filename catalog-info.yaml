@@ -1,0 +1,56 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: fcs-donations
+  title: FCS Donations
+  description: Intenções de doação, elegibilidade, outbox e publicação de eventos.
+  annotations:
+    github.com/project-slug: group10-tc-01/fcs-donations
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-id: fcs-donations
+    backstage.io/kubernetes-namespace: fcs-donations
+  links:
+    - title: Datadog
+      url: https://us5.datadoghq.com/metric/explorer?query=service%3Afcs-donations
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: group:default/fcs-team
+  system: conexao-solidaria
+  providesApis:
+    - fcs-donations-api
+  dependsOn:
+    - component:default/fcs-campaign
+    - resource:default/sqlserver
+    - resource:default/keycloak
+    - resource:default/kafka
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: fcs-donations-api
+  title: FCS Donations API
+  description: API para criação e consulta de intenções de doação.
+spec:
+  type: openapi
+  lifecycle: production
+  owner: group:default/fcs-team
+  system: conexao-solidaria
+  definition: |
+    openapi: 3.0.3
+    info:
+      title: FCS Donations API
+      version: v1
+    paths:
+      /api/v1/donations:
+        get:
+          summary: Lista doações do usuário autenticado
+        post:
+          summary: Cria uma intenção de doação
+      /api/v1/donations/{id}:
+        get:
+          summary: Consulta uma doação
+      /api/v1/donations/admin:
+        get:
+          summary: Lista doações para gestão
