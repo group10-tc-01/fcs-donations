@@ -1,8 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
+using Fcs.Donations.Application.Abstractions.Messaging;
 using Fcs.Donations.Application.Audit;
 using Fcs.Donations.Domain.Abstractions;
 using Fcs.Donations.Domain.OutboxMessages;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Fcs.Donations.Infrastructure.Kafka.Messaging;
 
@@ -10,22 +12,22 @@ namespace Fcs.Donations.Infrastructure.Kafka.Messaging;
 public sealed class OutboxMessageProcessor
 {
     private readonly IOutboxMessageRepository _repository;
-    private readonly IOutboxMessagePublisher _publisher;
+    private readonly IMessagePublisher _publisher;
+    private readonly KafkaTopicsSettings _kafkaTopics;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IAuditPublisher _auditPublisher;
     private readonly ILogger<OutboxMessageProcessor> _logger;
 
     public OutboxMessageProcessor(
         IOutboxMessageRepository repository,
-        IOutboxMessagePublisher publisher,
+        IMessagePublisher publisher,
         IUnitOfWork unitOfWork,
-        IAuditPublisher auditPublisher,
+        IOptions<KafkaSettings> kafkaSettings,
         ILogger<OutboxMessageProcessor> logger)
     {
         _repository = repository;
         _publisher = publisher;
         _unitOfWork = unitOfWork;
-        _auditPublisher = auditPublisher;
+        _kafkaTopics = kafkaSettings.Value.Topics;
         _logger = logger;
     }
 
@@ -43,11 +45,11 @@ public sealed class OutboxMessageProcessor
     {
         try
         {
-            await _publisher.PublishRawAsync(message.Payload, cancellationToken);
+            await _publisher.PublishAsync("donation-received", message.Payload, cancellationToken);
             message.MarkPublished();
             await _repository.UpdateAsync(message, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            _auditPublisher.PublishAuditLogFireAndForget(CreatePublishedAudit(message));
+            _publisher.PublishAuditLogFireAndForget(_kafkaTopics.AuditLog, CreatePublishedAudit(message));
         }
         catch (Exception ex)
         {

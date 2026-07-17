@@ -110,7 +110,8 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
             var claims = new List<Claim>
             {
-                new(ClaimTypes.NameIdentifier, _currentUser.KeycloakUserId ?? string.Empty)
+                new(ClaimTypes.NameIdentifier, _currentUser.KeycloakUserId ?? string.Empty),
+                new(ClaimTypes.Email, _currentUser.Email ?? "doador@teste.local")
             };
 
             claims.AddRange(_currentUser.Roles.Select(role => new Claim(ClaimTypes.Role, role)));

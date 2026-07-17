@@ -1,13 +1,17 @@
 using System.Diagnostics.CodeAnalysis;
+using Fcs.Donations.Application.Abstractions.Messaging;
 
 namespace Fcs.Donations.Application.Audit;
 
 [ExcludeFromCodeCoverage]
 public static class AuditPublisherExtensions
 {
-    public static void PublishAuditLogFireAndForget(this IAuditPublisher auditPublisher, AuditLogRequestedEvent auditEvent)
+    public static void PublishAuditLogFireAndForget(
+        this IMessagePublisher messagePublisher,
+        string topicName,
+        AuditLogRequestedEvent auditEvent)
     {
-        var publishTask = auditPublisher.PublishAsync(auditEvent, CancellationToken.None);
+        var publishTask = messagePublisher.PublishAsync(topicName, auditEvent, CancellationToken.None);
         if (publishTask.IsCompletedSuccessfully)
         {
             return;

@@ -22,6 +22,8 @@ public sealed class HttpContextCurrentUser : ICurrentUser
         User.FindFirstValue("sub") ??
         User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+    public string? Email => User.FindFirstValue(ClaimTypes.Email) ?? User.FindFirstValue("email");
+
     public IReadOnlyCollection<string> Roles => GetRoles().ToArray();
 
     private ClaimsPrincipal User => _httpContextAccessor.HttpContext?.User ?? new ClaimsPrincipal();

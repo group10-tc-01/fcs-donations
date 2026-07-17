@@ -9,8 +9,8 @@ data:
   HttpsRedirection__Enabled: "false"
   Database__ApplyMigrations: "true"
   KafkaSettings__BootstrapServers: kafka-service.fcs-infra.svc.cluster.local:29092
-  KafkaSettings__TopicName: donation-received
-  KafkaSettings__AuditTopicName: audit-log-requested
+  KafkaSettings__Topics__AuditLog: audit-log-requested
+  KafkaSettings__Topics__EmailNotification: email-notification-requested
   CampaignApi__BaseUrl: http://fcs-campaign-service.fcs-campaigns.svc.cluster.local:8080/
   CampaignApi__TimeoutSeconds: "10"
   CampaignApi__Retry__Attempts: "3"
