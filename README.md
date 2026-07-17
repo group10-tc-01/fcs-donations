@@ -9,6 +9,7 @@ API de intenções de doação da plataforma **Conexão Solidária**. Recebe ped
 - Persistir `Donations`, `OutboxMessages` e `ProcessedMessages` no `DonationsDb`.
 - Publicar `DonationReceivedEvent` no tópico `donation-received` por meio da outbox.
 - Publicar eventos explícitos no tópico `audit-log-requested`.
+- Publicar `EmailNotificationRequestedEvent` para a `fcs-notifications` após criar a doação.
 
 ## Referências oficiais
 
