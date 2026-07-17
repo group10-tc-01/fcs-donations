@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using Fcs.Donations.Application.Abstractions.Authentication;
 using Fcs.Donations.Application.Abstractions.ExternalServices;
+using Fcs.Donations.Application.Abstractions.Messaging;
 using Fcs.Donations.CommomTestsUtilities.TestDoubles;
 using Fcs.Donations.Domain.Abstractions;
 using Fcs.Donations.Domain.Donations;
@@ -33,6 +34,7 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
     public FakeUnitOfWork UnitOfWork { get; } = new();
     public FakeCampaignEligibilityClient CampaignClient { get; } = new();
     public FakeCurrentUser CurrentUser { get; } = new();
+    public FakeMessagePublisher MessagePublisher { get; } = new();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -69,12 +71,14 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
             services.RemoveAll<IUnitOfWork>();
             services.RemoveAll<ICampaignEligibilityClient>();
             services.RemoveAll<ICurrentUser>();
+            services.RemoveAll<IMessagePublisher>();
 
             services.AddSingleton<IDonationRepository>(DonationRepository);
             services.AddSingleton<IOutboxMessageRepository>(OutboxRepository);
             services.AddSingleton<IUnitOfWork>(UnitOfWork);
             services.AddSingleton<ICampaignEligibilityClient>(CampaignClient);
             services.AddSingleton<ICurrentUser>(CurrentUser);
+            services.AddSingleton<IMessagePublisher>(MessagePublisher);
         });
 
         builder.ConfigureTestServices(services =>
@@ -110,7 +114,8 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
             var claims = new List<Claim>
             {
-                new(ClaimTypes.NameIdentifier, _currentUser.KeycloakUserId ?? string.Empty)
+                new(ClaimTypes.NameIdentifier, _currentUser.KeycloakUserId ?? string.Empty),
+                new(ClaimTypes.Email, _currentUser.Email ?? "doador@teste.local")
             };
 
             claims.AddRange(_currentUser.Roles.Select(role => new Claim(ClaimTypes.Role, role)));

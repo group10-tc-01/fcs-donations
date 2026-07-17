@@ -16,6 +16,7 @@ public sealed class HttpContextCurrentUserTests
         var claims = new[]
         {
             new Claim("sub", userId),
+            new Claim(ClaimTypes.Email, "doador@teste.local"),
             new Claim(ClaimTypes.Role, "Doador"),
             new Claim("roles", "GestorONG"),
             new Claim("realm_access", realmAccess)
@@ -24,6 +25,7 @@ public sealed class HttpContextCurrentUserTests
 
         sut.IsAuthenticated.Should().BeTrue();
         sut.KeycloakUserId.Should().Be(userId);
+        sut.Email.Should().Be("doador@teste.local");
         sut.Roles.Should().Contain(["Doador", "GestorONG"]);
     }
 
@@ -35,6 +37,16 @@ public sealed class HttpContextCurrentUserTests
         var sut = CreateCurrentUser(new ClaimsPrincipal(new ClaimsIdentity(claims, "Test")));
 
         sut.KeycloakUserId.Should().Be(userId);
+        sut.Email.Should().BeNull();
+    }
+
+    [Fact]
+    public void Given_EmailClaim_When_ReadEmail_Then_ShouldReturnEmail()
+    {
+        var claims = new[] { new Claim("email", "doador@teste.local") };
+        var sut = CreateCurrentUser(new ClaimsPrincipal(new ClaimsIdentity(claims, "Test")));
+
+        sut.Email.Should().Be("doador@teste.local");
     }
 
     [Fact]
@@ -44,6 +56,7 @@ public sealed class HttpContextCurrentUserTests
 
         sut.IsAuthenticated.Should().BeFalse();
         sut.KeycloakUserId.Should().BeNull();
+        sut.Email.Should().BeNull();
         sut.Roles.Should().BeEmpty();
     }
 
