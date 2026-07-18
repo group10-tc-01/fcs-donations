@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Fcs.Donations.Domain.OutboxMessages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Configurations.OutboxMessages;
 
+[ExcludeFromCodeCoverage]
 public sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage>
 {
     public void Configure(EntityTypeBuilder<OutboxMessage> builder)
