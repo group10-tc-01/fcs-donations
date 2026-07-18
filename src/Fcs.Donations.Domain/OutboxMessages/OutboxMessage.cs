@@ -9,12 +9,20 @@ public sealed class OutboxMessage
     {
     }
 
-    public OutboxMessage(Guid id, Guid aggregateId, string eventType, string payload)
+    public OutboxMessage(
+        Guid id,
+        Guid aggregateId,
+        string eventType,
+        string payload,
+        string? traceParent = null,
+        string? traceState = null)
     {
         Id = id;
         AggregateId = aggregateId;
         EventType = eventType;
         Payload = payload;
+        TraceParent = traceParent;
+        TraceState = traceState;
         Status = OutboxMessageStatus.Pending;
         CreatedAt = DateTime.UtcNow;
         RetryCount = 0;
@@ -24,6 +32,8 @@ public sealed class OutboxMessage
     public Guid AggregateId { get; private set; }
     public string EventType { get; private set; } = string.Empty;
     public string Payload { get; private set; } = string.Empty;
+    public string? TraceParent { get; private set; }
+    public string? TraceState { get; private set; }
     public OutboxMessageStatus Status { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? PublishedAt { get; private set; }

@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Fcs.Donations.Domain.OutboxMessages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Fcs.Donations.Infrastructure.SqlServer.Persistence.Configurations.OutboxMessages;
 
+[ExcludeFromCodeCoverage]
 public sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage>
 {
     public void Configure(EntityTypeBuilder<OutboxMessage> builder)
@@ -13,6 +15,8 @@ public sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<Outbox
         builder.Property(x => x.AggregateId).IsRequired();
         builder.Property(x => x.EventType).HasMaxLength(200).IsRequired();
         builder.Property(x => x.Payload).IsRequired();
+        builder.Property(x => x.TraceParent).HasMaxLength(128);
+        builder.Property(x => x.TraceState).HasMaxLength(512);
         builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Property(x => x.CreatedAt).IsRequired();
         builder.Property(x => x.PublishedAt);

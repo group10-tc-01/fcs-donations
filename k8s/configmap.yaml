@@ -19,4 +19,6 @@ data:
   Keycloak__Audience: solidarity-api
   Cors__AllowedOrigins__0: https://fcs-web.flaviojcf.com.br
   Observability__ServiceName: Fcs.Donations
-  Observability__EnableOtlpExporter: "false"
+  Observability__EnableOtlpExporter: "true"
+  Observability__OtlpEndpoint: http://otel-collector-service.fcs-infra.svc.cluster.local:4318
+  Observability__OtlpAuthHeader: ""
