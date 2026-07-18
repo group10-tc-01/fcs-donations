@@ -2,11 +2,14 @@ using System.Text.Json;
 using Fcs.Donations.Application.Audit;
 using Fcs.Donations.Application.Abstractions.Authentication;
 using Fcs.Donations.Application.Abstractions.ExternalServices;
+using Fcs.Donations.Application.Abstractions.Messaging;
 using Fcs.Donations.Domain.Abstractions;
 using Fcs.Donations.Domain.Donations;
 using Fcs.Donations.Domain.OutboxMessages;
 using Fcs.Donations.Domain.Results;
 using Fcs.Donations.Messages;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Fcs.Donations.Application.UseCases.Donations.CreateDonation;
 
@@ -17,7 +20,9 @@ public sealed class CreateDonationUseCase : ICreateDonationUseCase
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICampaignEligibilityClient _campaignClient;
     private readonly ICurrentUser _currentUser;
-    private readonly IAuditPublisher? _auditPublisher;
+    private readonly IMessagePublisher? _messagePublisher;
+    private readonly KafkaTopicsSettings _kafkaTopics;
+    private readonly ILogger<CreateDonationUseCase>? _logger;
 
     public CreateDonationUseCase(
         IDonationRepository donationRepository,
@@ -25,14 +30,18 @@ public sealed class CreateDonationUseCase : ICreateDonationUseCase
         IUnitOfWork unitOfWork,
         ICampaignEligibilityClient campaignClient,
         ICurrentUser currentUser,
-        IAuditPublisher? auditPublisher = null)
+        IMessagePublisher? messagePublisher = null,
+        IOptions<KafkaSettings>? kafkaSettings = null,
+        ILogger<CreateDonationUseCase>? logger = null)
     {
         _donationRepository = donationRepository;
         _outboxMessageRepository = outboxMessageRepository;
         _unitOfWork = unitOfWork;
         _campaignClient = campaignClient;
         _currentUser = currentUser;
-        _auditPublisher = auditPublisher;
+        _messagePublisher = messagePublisher;
+        _kafkaTopics = kafkaSettings?.Value.Topics ?? new KafkaTopicsSettings();
+        _logger = logger;
     }
 
     public async Task<Result<CreateDonationResponse>> Handle(CreateDonationRequest request, CancellationToken cancellationToken)
@@ -42,6 +51,11 @@ public sealed class CreateDonationUseCase : ICreateDonationUseCase
         {
             PublishRejectedAudit(null, null, "Public", request, ResourceMessages.DonationUnauthenticated);
             return Error.Failure(ResourceMessages.DonationUnauthenticatedCode, ResourceMessages.DonationUnauthenticated);
+        }
+
+        if (string.IsNullOrWhiteSpace(_currentUser.Email))
+        {
+            return Error.Validation("donation.email_missing", "Authenticated donor token must include an email claim.");
         }
 
         var eligibilityResult = await _campaignClient.CheckEligibilityAsync(request.CampaignId, cancellationToken);
@@ -78,7 +92,8 @@ public sealed class CreateDonationUseCase : ICreateDonationUseCase
             donation.CampaignId,
             donation.DonorId,
             donation.Amount,
-            donation.CreatedAt);
+            donation.CreatedAt,
+            _currentUser.Email!);
 
         var payload = JsonSerializer.Serialize(donationEvent);
         var outboxMessage = new OutboxMessage(eventId, donation.Id, nameof(DonationReceivedEvent), payload);
@@ -87,8 +102,34 @@ public sealed class CreateDonationUseCase : ICreateDonationUseCase
         await _outboxMessageRepository.AddAsync(outboxMessage, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         PublishEventQueuedAudit(outboxMessage, donation);
+        await PublishDonationCreatedEmailNotificationAsync(donation, _currentUser.Email, cancellationToken);
 
         return new CreateDonationResponse(donation.Id, donation.CampaignId, donation.Amount, donation.CreatedAt);
+    }
+
+    private async Task PublishDonationCreatedEmailNotificationAsync(Donation donation, string recipientEmail, CancellationToken cancellationToken)
+    {
+        if (_messagePublisher is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await _messagePublisher.PublishAsync(
+                _kafkaTopics.EmailNotification,
+                new EmailNotificationRequestedEvent(Guid.NewGuid(), EmailNotificationRequestedEvent.DonationCreated, recipientEmail, donation.Id, donation.Amount, donation.CreatedAt),
+                cancellationToken);
+        }
+        catch (Exception) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception exception)
+        {
+            // Email-notification dispatch is best effort and must not revert the donation transaction.
+            _logger?.LogError(exception, "Failed to publish donation-created email notification for donation {DonationId}", donation.Id);
+        }
     }
 
     private void PublishRequestedAudit(Donation donation, CreateDonationRequest request)
@@ -135,7 +176,7 @@ public sealed class CreateDonationUseCase : ICreateDonationUseCase
 
     private void PublishAudit(AuditLogRequestedEvent auditEvent)
     {
-        _auditPublisher?.PublishAuditLogFireAndForget(auditEvent);
+        _messagePublisher?.PublishAuditLogFireAndForget(_kafkaTopics.AuditLog, auditEvent);
     }
 
     private static IReadOnlyDictionary<string, object?> BuildDonationMetadata(Guid campaignId, decimal amount)
