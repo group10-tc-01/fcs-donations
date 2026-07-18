@@ -13,6 +13,8 @@ public sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<Outbox
         builder.Property(x => x.AggregateId).IsRequired();
         builder.Property(x => x.EventType).HasMaxLength(200).IsRequired();
         builder.Property(x => x.Payload).IsRequired();
+        builder.Property(x => x.TraceParent).HasMaxLength(128);
+        builder.Property(x => x.TraceState).HasMaxLength(512);
         builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Property(x => x.CreatedAt).IsRequired();
         builder.Property(x => x.PublishedAt);

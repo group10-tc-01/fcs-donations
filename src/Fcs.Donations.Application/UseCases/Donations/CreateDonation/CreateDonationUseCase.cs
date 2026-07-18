@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Fcs.Donations.Application.Audit;
+using System.Diagnostics;
 using Fcs.Donations.Application.Abstractions.Authentication;
 using Fcs.Donations.Application.Abstractions.ExternalServices;
 using Fcs.Donations.Application.Abstractions.Messaging;
@@ -96,7 +97,13 @@ public sealed class CreateDonationUseCase : ICreateDonationUseCase
             _currentUser.Email!);
 
         var payload = JsonSerializer.Serialize(donationEvent);
-        var outboxMessage = new OutboxMessage(eventId, donation.Id, nameof(DonationReceivedEvent), payload);
+        var outboxMessage = new OutboxMessage(
+            eventId,
+            donation.Id,
+            nameof(DonationReceivedEvent),
+            payload,
+            Activity.Current?.Id,
+            Activity.Current?.TraceStateString);
 
         await _donationRepository.AddAsync(donation, cancellationToken);
         await _outboxMessageRepository.AddAsync(outboxMessage, cancellationToken);
