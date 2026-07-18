@@ -1,4 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
+using Fcs.Donations.Infrastructure.SqlServer.Persistence;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -6,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Fcs.Donations.Infrastructure.SqlServer.Migrations;
 
 [ExcludeFromCodeCoverage]
+[DbContext(typeof(FcsDonationsDbContext))]
 [Migration("20260718000000_AddOutboxTraceContext")]
 public partial class AddOutboxTraceContext : Migration
 {
