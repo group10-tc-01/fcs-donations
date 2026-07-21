@@ -88,6 +88,14 @@ partial class FcsDonationsDbContextModelSnapshot : ModelSnapshot
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TraceParent")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("TraceState")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
                     b.Property<DateTime?>("PublishedAt")
                         .HasColumnType("datetime2");
 

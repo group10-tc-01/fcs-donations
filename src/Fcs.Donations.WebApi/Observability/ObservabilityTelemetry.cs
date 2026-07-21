@@ -29,6 +29,7 @@ public static class ObservabilityTelemetry
     {
         builder
             .SetResourceBuilder(resourceBuilder)
+            .AddSource("Fcs.Donations")
             .AddAspNetCoreInstrumentation(options =>
             {
                 options.Filter = httpContext =>
@@ -42,7 +43,7 @@ public static class ObservabilityTelemetry
         {
             builder.AddOtlpExporter(options =>
             {
-                options.Endpoint = new Uri($"{settings.OtlpEndpoint}/otlp/v1/traces");
+                options.Endpoint = new Uri($"{settings.OtlpEndpoint}/v1/traces");
                 options.Protocol = OtlpExportProtocol.HttpProtobuf;
 
                 if (!string.IsNullOrWhiteSpace(settings.OtlpAuthHeader))
@@ -71,7 +72,7 @@ public static class ObservabilityTelemetry
         {
             builder.AddOtlpExporter(options =>
             {
-                options.Endpoint = new Uri($"{settings.OtlpEndpoint}/otlp/v1/metrics");
+                options.Endpoint = new Uri($"{settings.OtlpEndpoint}/v1/metrics");
                 options.Protocol = OtlpExportProtocol.HttpProtobuf;
 
                 if (!string.IsNullOrWhiteSpace(settings.OtlpAuthHeader))

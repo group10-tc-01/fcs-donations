@@ -25,7 +25,7 @@ public static class DependencyInjection
             });
 
         services.AddEndpointsApiExplorer();
-        services.AddDonationsSwagger();
+        services.AddDonationsSwagger(configuration);
         services.AddCorsConfiguration(configuration);
         services.AddVersioning();
         services.AddFilters();
@@ -99,6 +99,7 @@ public static class DependencyInjection
         var loggerConfiguration = new LoggerConfiguration()
             .MinimumLevel.Information()
             .Enrich.FromLogContext()
+            .Enrich.With<TraceContextEnricher>()
             .Enrich.WithMachineName()
             .Enrich.WithProperty("Application", "Fcs.Donations")
             .Enrich.WithProperty("Environment", environment)
@@ -108,7 +109,7 @@ public static class DependencyInjection
         {
             loggerConfiguration.WriteTo.OpenTelemetry(options =>
             {
-                options.Endpoint = $"{settings.OtlpEndpoint}/otlp/v1/logs";
+                options.Endpoint = $"{settings.OtlpEndpoint}/v1/logs";
                 options.Protocol = OtlpProtocol.HttpProtobuf;
 
                 if (!string.IsNullOrWhiteSpace(settings.OtlpAuthHeader))

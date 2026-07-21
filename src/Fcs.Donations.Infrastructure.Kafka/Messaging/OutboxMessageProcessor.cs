@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics;
 using Fcs.Donations.Application.Abstractions.Messaging;
 using Fcs.Donations.Application.Audit;
 using Fcs.Donations.Domain.Abstractions;
@@ -11,6 +12,7 @@ namespace Fcs.Donations.Infrastructure.Kafka.Messaging;
 [ExcludeFromCodeCoverage]
 public sealed class OutboxMessageProcessor
 {
+    private static readonly ActivitySource ActivitySource = new("Fcs.Donations");
     private readonly IOutboxMessageRepository _repository;
     private readonly IMessagePublisher _publisher;
     private readonly KafkaTopicsSettings _kafkaTopics;
@@ -43,6 +45,14 @@ public sealed class OutboxMessageProcessor
 
     private async Task ProcessAsync(OutboxMessage message, CancellationToken cancellationToken)
     {
+        using var activity = ActivitySource.StartActivity(
+            $"kafka publish {message.EventType}",
+            ActivityKind.Producer,
+            GetParentContext(message));
+        activity?.SetTag("messaging.system", "kafka");
+        activity?.SetTag("messaging.destination.name", "donation-received");
+        activity?.SetTag("messaging.operation.name", "publish");
+
         try
         {
             await _publisher.PublishAsync("donation-received", message.Payload, cancellationToken);
@@ -58,6 +68,13 @@ public sealed class OutboxMessageProcessor
             await _repository.UpdateAsync(message, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
+    }
+
+    private static ActivityContext GetParentContext(OutboxMessage message)
+    {
+        return ActivityContext.TryParse(message.TraceParent, message.TraceState, out var context)
+            ? context
+            : default;
     }
 
     private static AuditLogRequestedEvent CreatePublishedAudit(OutboxMessage message)
